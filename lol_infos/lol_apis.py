@@ -8,7 +8,7 @@ import requests
 # - /lol/summoner/v4/summoners/by-puuid/{encryptedPUUID} -> Para pegar todas as informações da conta do usuário.
 
 # MATCH-V5
-# - /lol/match/v5/matches/by-puuid/{puuid}/ids -> Para pegar as informações de todas as partidas do usuário.
+# - /lol/match/v5/matches/by-puuid/{puuid}/ids -> Para pegar as informações de todas as partidas do usuário (padrão vem as últimas 20).
 
 # - /lol/match/v5/matches/{matchId} -> Para pegar as informações gerais de uma partida em específico.
 
@@ -40,7 +40,9 @@ class LolVerifier:
 
         response_checked = self.__check_response(response)
 
-        return response_checked
+        puuid = response_checked
+
+        return puuid
 
     def get_acc_info(self,puuid):
         endpoint = f"/lol/summoner/v4/summoners/by-puuid/{puuid}"
@@ -51,14 +53,38 @@ class LolVerifier:
 
         return response_checked
 
-    def get_all_matchs(self):
-        pass
+    def get_all_matchs(self, puuid):
+        endpoint = f"/lol/match/v5/matches/by-puuid/{puuid}/ids"
+        url = self.base_url_region + endpoint
+        response = requests.get(url, params=self.api_params)
 
-    def get_match_geral_info(self):
-        pass
+        response_checked = self.__check_response(response)
 
-    def get_match_timeline_info(self):
-        pass
+        return response_checked
 
-    def get_current_match(self):
-        pass
+    def get_match_geral_info(self, match_id):
+        endpoint = f"/lol/match/v5/matches/{match_id}"
+        url = self.base_url_region + endpoint
+        response = requests.get(url, params=self.api_params)
+
+        response_checked = self.__check_response(response)
+
+        return response_checked
+
+    def get_match_timeline_info(self, match_id):
+        endpoint = f"/lol/match/v5/matches/{match_id}/timeline"
+        url = self.base_url_region + endpoint
+        response = requests.get(url, params=self.api_params)
+
+        response_checked = self.__check_response(response)
+
+        return response_checked
+
+    def get_current_match(self, puuid):
+        endpoint = f"/lol/spectator/v5/active-games/by-summoner/{puuid}"
+        url = self.base_url_region + endpoint
+        response = requests.get(url, params=self.api_params)
+
+        response_checked = self.__check_response(response)
+
+        return response_checked
