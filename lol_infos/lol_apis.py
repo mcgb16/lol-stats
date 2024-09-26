@@ -40,7 +40,7 @@ class LolVerifier:
 
         response_checked = self.__check_response(response)
 
-        puuid = response_checked
+        puuid = response_checked['puuid']
 
         return puuid
 
