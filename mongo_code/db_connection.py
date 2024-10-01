@@ -5,15 +5,15 @@ client = MongoClient(ex.string_connection)
 
 db_conn = client[ex.db]
 
-itemsCollection = db_conn[ex.itemsCollection]
-lolStatsCollection = db_conn[ex.lolStatsCollection]
-runesCollection = db_conn[ex.runesCollection]
-spellsCollection = db_conn[ex.spellsCollection]
-championsCollection = db_conn[ex.championsCollection]
+items_collection = db_conn[ex.items_collection]
+matchs_collection = db_conn[ex.matchs_collection]
+runes_collection = db_conn[ex.runes_collection]
+spells_collection = db_conn[ex.spells_collection]
+champions_collection = db_conn[ex.champions_collection]
 
 def find_items(id_item):
     get_last_doc = [("_id", -1)]
-    response = itemsCollection.find_one(sort=get_last_doc)
+    response = items_collection.find_one(sort=get_last_doc)
 
     get_item = response['data'][id_item]['name']
 
@@ -33,7 +33,7 @@ def find_runes(id_rune):
         }
     }
 
-    response = runesCollection.find_one(search_rune)
+    response = runes_collection.find_one(search_rune)
 
     for i in response['slots']:
         for k in i['runes']:
@@ -46,7 +46,7 @@ def find_runes(id_rune):
 def find_summoner_spells(id_spell):
     get_last_doc = [("_id", -1)]
 
-    response = spellsCollection.find_one(sort=get_last_doc)
+    response = spells_collection.find_one(sort=get_last_doc)
 
     spells_dict = response['data']
 
