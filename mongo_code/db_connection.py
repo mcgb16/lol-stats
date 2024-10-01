@@ -43,6 +43,22 @@ def find_runes(id_rune):
 
     return get_rune
 
+def find_summoner_spells(id_spell):
+    get_last_doc = [("_id", -1)]
 
-print(find_items("3153"))
-print(find_runes("8008"))
+    response = spellsCollection.find_one(sort=get_last_doc)
+
+    spells_dict = response['data']
+
+    for i in spells_dict.items():
+        for k in i:
+            if type(k) == dict:
+                if k['key'] == id_spell:
+                    get_spell = k['name']
+                    break
+    
+    return get_spell
+
+# print(find_items("3153"))
+# print(find_runes("8008"))
+# print(find_summoner_spells("7"))
