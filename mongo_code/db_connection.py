@@ -59,6 +59,40 @@ def find_summoner_spells(id_spell):
     
     return get_spell
 
+def find_champion_by_id(id_champion):
+    get_last_doc = [("_id", -1)]
+
+    response = champions_collection.find_one(sort=get_last_doc)
+
+    champions_dict = response['data']
+
+    for i in champions_dict.items():
+        for k in i:
+            if type(k) == dict:
+                if k['key'] == id_champion:
+                    get_champion = k['name']
+                    break
+    
+    return get_champion
+
+def find_champion_by_name(name_champion):
+    get_last_doc = [("_id", -1)]
+
+    response = champions_collection.find_one(sort=get_last_doc)
+
+    champions_dict = response['data']
+
+    for i in champions_dict.items():
+        for k in i:
+            if k == name_champion:
+                get_champion = k
+                break
+    
+    return get_champion
+
+
 # print(find_items("3153"))
 # print(find_runes("8008"))
 # print(find_summoner_spells("7"))
+# print(find_champion_by_id("22"))
+# print(find_champion_by_name("Illaoi"))
