@@ -90,6 +90,15 @@ def find_champion_by_name(name_champion):
     
     return get_champion
 
+def find_match(id_match):
+    search_match = {
+        "match_id": id_match
+    }
+
+    response = matchs_collection.find_one(search_match)
+
+    return response
+
 def create_match_db(matchs_data):
     post_result = matchs_collection.insert_many(matchs_data)
     return post_result
@@ -99,3 +108,4 @@ def create_match_db(matchs_data):
 # print(find_summoner_spells("7"))
 # print(find_champion_by_id("22"))
 # print(find_champion_by_name("Illaoi"))
+# print(find_match("BR1_3004516580"))
