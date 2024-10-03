@@ -1,22 +1,6 @@
 import extras.ex_info as ex
 import requests
 
-# ACCOUNT-V1
-# - /riot/account/v1/accounts/by-riot-id/{gameName}/{tagLine} -> Para pegar o puuid.
-
-# SUMMONER-V4
-# - /lol/summoner/v4/summoners/by-puuid/{encryptedPUUID} -> Para pegar todas as informações da conta do usuário.
-
-# MATCH-V5
-# - /lol/match/v5/matches/by-puuid/{puuid}/ids -> Para pegar as informações de todas as partidas do usuário (padrão vem as últimas 20).
-
-# - /lol/match/v5/matches/{matchId} -> Para pegar as informações gerais de uma partida em específico.
-
-# - /lol/match/v5/matches/{matchId}/timeline -> Para pegar todas as informações baseadas na timeline de uma partida em específico.
-
-# SPECTATOR-V5
-# - /lol/spectator/v5/active-games/by-summoner/{encryptedPUUID} -> Para pegar as informações da partida atual do usuário.
-
 class LolVerifier:
     def __init__(self, name, tag):
         self.n = name
@@ -26,6 +10,7 @@ class LolVerifier:
         self.base_url_region = "https://americas.api.riotgames.com"
         self.api_params = {'api_key': self.api}
 
+    # Checa se o resultado da API foi o esperado.
     def __check_response(self,response):
         if response.status_code == 200:
             account_info = response.json()
@@ -33,6 +18,7 @@ class LolVerifier:
         else:
             return response.status_code
     
+    # Para pegar o puuid.
     def get_puuid(self):
         endpoint = f"/riot/account/v1/accounts/by-riot-id/{self.n}/{self.t}"
         url = self.base_url_region + endpoint
@@ -44,6 +30,8 @@ class LolVerifier:
 
         return puuid
 
+    # Para pegar todas as informações da conta do usuário.
+    # Ainda não usada.
     def get_acc_info(self,puuid):
         endpoint = f"/lol/summoner/v4/summoners/by-puuid/{puuid}"
         url = self.base_url_platform + endpoint
@@ -53,6 +41,7 @@ class LolVerifier:
 
         return response_checked
 
+    # Para pegar as informações de todas as partidas do usuário (padrão vem as últimas 20).
     def get_all_matchs(self, puuid):
         endpoint = f"/lol/match/v5/matches/by-puuid/{puuid}/ids"
         url = self.base_url_region + endpoint
@@ -62,6 +51,7 @@ class LolVerifier:
 
         return response_checked
 
+    # Para pegar as informações gerais de uma partida em específico.
     def get_match_geral_info(self, match_id):
         endpoint = f"/lol/match/v5/matches/{match_id}"
         url = self.base_url_region + endpoint
@@ -71,6 +61,8 @@ class LolVerifier:
 
         return response_checked
 
+    # Para pegar todas as informações baseadas na timeline de uma partida em específico.
+    # Ainda não usada.
     def get_match_timeline_info(self, match_id):
         endpoint = f"/lol/match/v5/matches/{match_id}/timeline"
         url = self.base_url_region + endpoint
@@ -80,6 +72,8 @@ class LolVerifier:
 
         return response_checked
 
+    # Para pegar as informações da partida atual do usuário.
+    # Ainda não usada.
     def get_current_match(self, puuid):
         endpoint = f"/lol/spectator/v5/active-games/by-summoner/{puuid}"
         url = self.base_url_region + endpoint
