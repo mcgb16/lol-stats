@@ -13,10 +13,10 @@ class LolVerifier:
     # Checa se o resultado da API foi o esperado.
     def __check_response(self,response):
         if response.status_code == 200:
-            account_info = response.json()
-            return account_info
+            api_info = response.json()
+            return api_info
         else:
-            return response.status_code
+            raise Exception(f"Erro {response.status_code} na API.")
     
     # Para pegar o puuid.
     def get_puuid(self):
