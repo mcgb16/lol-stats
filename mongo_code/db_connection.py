@@ -100,8 +100,8 @@ def find_match(id_match):
     return response
 
 def create_match_db(matchs_data):
-    post_result = matchs_collection.insert_many(matchs_data)
-    return post_result
+    save_result = matchs_collection.insert_many(matchs_data)
+    return save_result
 
 # print(find_items("3153"))
 # print(find_runes("8008"))
