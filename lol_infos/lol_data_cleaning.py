@@ -1,4 +1,4 @@
-def organize_match_data(match_dict):
+def organize_match_geral_data(match_dict):
     players_info_list = match_dict['info']['participants']
 
     info_to_exclude = [
@@ -71,3 +71,6 @@ def organize_match_data(match_dict):
     }
 
     return match_data
+
+def organize_match_timeline_data(match_dict):
+    pass
