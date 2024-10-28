@@ -1,3 +1,5 @@
+import mongo_code.db_connection as db_conn
+
 def organize_match_geral_data(match_dict):
     players_info_list = match_dict['info']['participants']
 
@@ -71,6 +73,39 @@ def organize_match_geral_data(match_dict):
     }
 
     return match_data
+
+def clean_teams_data(teams_data):
+    blue_team_bans = teams_data["teams_data"]["blue_team"]["bans"]
+    red_team_bans = teams_data["teams_data"]["red_team"]["bans"]
+
+    for i in blue_team_bans:
+        for k,v in i.items():
+            if k == "championId":
+                champion_name = db_conn.find_champion_by_id(str(v))
+                
+                i[k] = champion_name
+            else:
+                continue
+    
+    for i in red_team_bans:
+        for k,v in i.items():
+            if k == "championId":
+                if v == -1:
+                    i[k] = "None"
+                else:
+                    champion_name = db_conn.find_champion_by_id(str(v))
+                    
+                    i[k] = champion_name
+            else:
+                continue
+
+    teams_data["teams_data"]["blue_team"]["bans"] = blue_team_bans
+    teams_data["teams_data"]["red_team"]["bans"] = red_team_bans
+    
+    return teams_data
+
+def clean_players_data(players_data):
+    pass
 
 def organize_match_timeline_data(match_dict):
     pass
