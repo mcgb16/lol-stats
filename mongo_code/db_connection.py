@@ -99,6 +99,22 @@ def find_match(id_match):
 
     return response
 
+def find_player_history(puuid):
+    search_match_history = {
+        "all_players" : {
+            "$in" : [puuid]
+        }
+    }
+
+    response = matchs_collection.find(search_match_history)
+
+    match_history = []
+
+    for i in response:
+        match_history.append(i)
+
+    return match_history
+
 def create_match_db(matchs_data):
     save_result = matchs_collection.insert_many(matchs_data)
     return save_result
