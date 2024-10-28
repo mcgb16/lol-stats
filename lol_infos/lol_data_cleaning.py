@@ -1,4 +1,5 @@
 import mongo_code.db_connection as db_conn
+import basic_code.basic as basic
 
 def organize_match_geral_data(match_dict):
     players_info_list = match_dict['info']['participants']
@@ -75,8 +76,8 @@ def organize_match_geral_data(match_dict):
     return match_data
 
 def clean_teams_data(teams_data):
-    blue_team_bans = teams_data["teams_data"]["blue_team"]["bans"]
-    red_team_bans = teams_data["teams_data"]["red_team"]["bans"]
+    blue_team_bans = teams_data["blue_team"]["bans"]
+    red_team_bans = teams_data["red_team"]["bans"]
 
     for i in blue_team_bans:
         for k,v in i.items():
@@ -99,13 +100,32 @@ def clean_teams_data(teams_data):
             else:
                 continue
 
-    teams_data["teams_data"]["blue_team"]["bans"] = blue_team_bans
-    teams_data["teams_data"]["red_team"]["bans"] = red_team_bans
+    teams_data["blue_team"]["bans"] = blue_team_bans
+    teams_data["red_team"]["bans"] = red_team_bans
     
     return teams_data
 
 def clean_players_data(players_data):
-    pass
+    for p in players_data:
+        # Pegar o nome dos itens.
+        p["item0"] = db_conn.find_items(str(p["item0"]))
+        p["item1"] = db_conn.find_items(str(p["item1"]))
+        p["item2"] = db_conn.find_items(str(p["item2"]))
+        p["item3"] = db_conn.find_items(str(p["item3"]))
+        p["item4"] = db_conn.find_items(str(p["item4"]))
+        p["item5"] = db_conn.find_items(str(p["item5"]))
+        p["item6"] = db_conn.find_items(str(p["item6"]))
+        
+        # Pegar o valor em minutos e segundos para as chaves de tempo.
+        p["longestTimeSpentLiving"] = basic.calculate_time_seconds(p["longestTimeSpentLiving"])
+        p["timePlayed"] = basic.calculate_time_seconds(p["timePlayed"])
+
+        # Pegar o nome dos feitiços de invocador.
+        p["summoner1Id"] = db_conn.find_summoner_spells(str(p["summoner1Id"]))
+        p["summoner2Id"] = db_conn.find_summoner_spells(str(p["summoner2Id"]))
+
+        # Ajustar as runas (perks).
+
 
 def organize_match_timeline_data(match_dict):
     pass
