@@ -107,25 +107,38 @@ def clean_teams_data(teams_data):
 
 def clean_players_data(players_data):
     for p in players_data:
-        # Pegar o nome dos itens.
-        p["item0"] = db_conn.find_items(str(p["item0"]))
-        p["item1"] = db_conn.find_items(str(p["item1"]))
-        p["item2"] = db_conn.find_items(str(p["item2"]))
-        p["item3"] = db_conn.find_items(str(p["item3"]))
-        p["item4"] = db_conn.find_items(str(p["item4"]))
-        p["item5"] = db_conn.find_items(str(p["item5"]))
-        p["item6"] = db_conn.find_items(str(p["item6"]))
-        
-        # Pegar o valor em minutos e segundos para as chaves de tempo.
-        p["longestTimeSpentLiving"] = basic.calculate_time_seconds(p["longestTimeSpentLiving"])
-        p["timePlayed"] = basic.calculate_time_seconds(p["timePlayed"])
+      # Pegar o nome dos itens.
 
-        # Pegar o nome dos feitiços de invocador.
-        p["summoner1Id"] = db_conn.find_summoner_spells(str(p["summoner1Id"]))
-        p["summoner2Id"] = db_conn.find_summoner_spells(str(p["summoner2Id"]))
+      p["item0"] = db_conn.find_items(p["item0"])
+      p["item1"] = db_conn.find_items(p["item1"])
+      p["item2"] = db_conn.find_items(p["item2"])
+      p["item3"] = db_conn.find_items(p["item3"])
+      p["item4"] = db_conn.find_items(p["item4"])
+      p["item5"] = db_conn.find_items(p["item5"])
+      p["item6"] = db_conn.find_items(p["item6"])
+      
+      # Pegar o valor em minutos e segundos para as chaves de tempo.
+      p["longestTimeSpentLiving"] = basic.calculate_time_seconds(p["longestTimeSpentLiving"])
+      p["timePlayed"] = basic.calculate_time_seconds(p["timePlayed"])
 
-        # Ajustar as runas (perks).
+      # Pegar o nome dos feitiços de invocador.
+      p["summoner1Id"] = db_conn.find_summoner_spells(str(p["summoner1Id"]))
+      p["summoner2Id"] = db_conn.find_summoner_spells(str(p["summoner2Id"]))
 
+      # Ajustar as runas principais (perks).
+      p["primaryRuneMain"] = db_conn.find_runes(str(p["perks"]["styles"][0]["selections"][0]["perk"]))
+      p["primaryRune1"] = db_conn.find_runes(str(p["perks"]["styles"][0]["selections"][1]["perk"]))
+      p["primaryRune2"] = db_conn.find_runes(str(p["perks"]["styles"][0]["selections"][2]["perk"]))
+      p["primaryRune3"] = db_conn.find_runes(str(p["perks"]["styles"][0]["selections"][3]["perk"]))
+
+      # Ajustar as runas secundárias (perks).
+      p["secundaryRune1"] = db_conn.find_runes(str(p["perks"]["styles"][1]["selections"][0]["perk"]))
+      p["secundaryRune2"] = db_conn.find_runes(str(p["perks"]["styles"][1]["selections"][1]["perk"]))
+
+      del p["perks"]
+
+    return players_data
 
 def organize_match_timeline_data(match_dict):
     pass
+
