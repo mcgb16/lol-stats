@@ -139,6 +139,16 @@ def clean_players_data(players_data):
 
     return players_data
 
+def clean_game_data(game_data):
+    game_data["queue_id"] = db_conn.find_queue_type(game_data["queue_id"])
+    game_data["game_duration"] = basic.calculate_time_seconds(game_data["game_duration"])
+    game_data["game_creation_time"] = basic.calculate_timestamps(game_data["game_creation_time"])
+
+    game_data["game_end_time"] = basic.sum_data(game_data["game_creation_time"], game_data["game_duration"])
+
+    return game_data
+
+
 def organize_match_timeline_data(match_dict):
     pass
 
