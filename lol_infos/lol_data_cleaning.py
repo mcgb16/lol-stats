@@ -82,7 +82,7 @@ def clean_teams_data(teams_data):
     for i in blue_team_bans:
         for k,v in i.items():
             if k == "championId":
-                champion_name = db_conn.find_champion_by_id(str(v))
+                champion_name = db_conn.find_champion_by_id(v)
                 
                 i[k] = champion_name
             else:
@@ -94,7 +94,7 @@ def clean_teams_data(teams_data):
                 if v == -1:
                     i[k] = "None"
                 else:
-                    champion_name = db_conn.find_champion_by_id(str(v))
+                    champion_name = db_conn.find_champion_by_id(v)
                     
                     i[k] = champion_name
             else:
@@ -122,18 +122,18 @@ def clean_players_data(players_data):
       p["timePlayed"] = basic.calculate_time_seconds(p["timePlayed"])
 
       # Pegar o nome dos feitiços de invocador.
-      p["summoner1Id"] = db_conn.find_summoner_spells(str(p["summoner1Id"]))
-      p["summoner2Id"] = db_conn.find_summoner_spells(str(p["summoner2Id"]))
+      p["summoner1Id"] = db_conn.find_summoner_spells(p["summoner1Id"])
+      p["summoner2Id"] = db_conn.find_summoner_spells(p["summoner2Id"])
 
       # Ajustar as runas principais (perks).
-      p["primaryRuneMain"] = db_conn.find_runes(str(p["perks"]["styles"][0]["selections"][0]["perk"]))
-      p["primaryRune1"] = db_conn.find_runes(str(p["perks"]["styles"][0]["selections"][1]["perk"]))
-      p["primaryRune2"] = db_conn.find_runes(str(p["perks"]["styles"][0]["selections"][2]["perk"]))
-      p["primaryRune3"] = db_conn.find_runes(str(p["perks"]["styles"][0]["selections"][3]["perk"]))
+      p["primaryRuneMain"] = db_conn.find_runes(p["perks"]["styles"][0]["selections"][0]["perk"])
+      p["primaryRune1"] = db_conn.find_runes(p["perks"]["styles"][0]["selections"][1]["perk"])
+      p["primaryRune2"] = db_conn.find_runes(p["perks"]["styles"][0]["selections"][2]["perk"])
+      p["primaryRune3"] = db_conn.find_runes(p["perks"]["styles"][0]["selections"][3]["perk"])
 
       # Ajustar as runas secundárias (perks).
-      p["secundaryRune1"] = db_conn.find_runes(str(p["perks"]["styles"][1]["selections"][0]["perk"]))
-      p["secundaryRune2"] = db_conn.find_runes(str(p["perks"]["styles"][1]["selections"][1]["perk"]))
+      p["secundaryRune1"] = db_conn.find_runes(p["perks"]["styles"][1]["selections"][0]["perk"])
+      p["secundaryRune2"] = db_conn.find_runes(p["perks"]["styles"][1]["selections"][1]["perk"])
 
       del p["perks"]
 
