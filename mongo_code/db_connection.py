@@ -10,6 +10,7 @@ matchs_collection = db_conn[ex.matchs_collection]
 runes_collection = db_conn[ex.runes_collection]
 spells_collection = db_conn[ex.spells_collection]
 champions_collection = db_conn[ex.champions_collection]
+queues_collection = db_conn[ex.queues_collection]
 
 def find_items(id_item):
     get_last_doc = [("_id", -1)]
@@ -125,9 +126,27 @@ def create_match_db(matchs_data):
     save_result = matchs_collection.insert_many(matchs_data)
     return save_result
 
+def find_queue_type(queue_id):
+    queue_id = int(queue_id)
+
+    search_queue = {
+        "queueId": queue_id
+    }
+
+    response = queues_collection.find_one(search_queue)
+
+    queue_map = response["map"]
+    queue_description = response["description"]
+
+    queue_type = f"{queue_map} ({queue_description})"
+
+    return queue_type
+
+
 # print(find_items("3153"))
 # print(find_runes("8008"))
 # print(find_summoner_spells("7"))
 # print(find_champion_by_id("22"))
 # print(find_champion_by_name("Illaoi"))
 # print(find_match("BR1_3004516580"))
+# print(find_queue_type(440))
