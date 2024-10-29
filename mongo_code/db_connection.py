@@ -15,9 +15,13 @@ def find_items(id_item):
     get_last_doc = [("_id", -1)]
     response = items_collection.find_one(sort=get_last_doc)
 
-    get_item = response['data'][id_item]['name']
+    if id_item == 0:
+        return "None"
+    else:
+        id_item = str(id_item)
+        get_item = response['data'][id_item]['name']
 
-    return get_item
+        return get_item
 
 def find_runes(id_rune):
     id_rune = int(id_rune)
@@ -53,6 +57,7 @@ def find_summoner_spells(id_spell):
     for i in spells_dict.items():
         for k in i:
             if type(k) == dict:
+                id_spell = str(id_spell)
                 if k['key'] == id_spell:
                     get_spell = k['name']
                     break
@@ -69,6 +74,7 @@ def find_champion_by_id(id_champion):
     for i in champions_dict.items():
         for k in i:
             if type(k) == dict:
+                id_champion = str(id_champion)
                 if k['key'] == id_champion:
                     get_champion = k['name']
                     break
