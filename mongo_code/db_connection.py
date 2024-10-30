@@ -123,8 +123,14 @@ def find_player_history(puuid):
     return match_history
 
 def create_match_db(matchs_data):
-    save_result = matchs_collection.insert_many(matchs_data)
-    return save_result
+    try:
+        save_result = matchs_collection.insert_many(matchs_data)
+        
+        return save_result
+    except Exception as e:
+        save_result = f"Erro: {e}"
+
+        return save_result
 
 def find_queue_type(queue_id):
     queue_id = int(queue_id)
