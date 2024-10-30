@@ -82,9 +82,12 @@ def clean_teams_data(teams_data):
     for i in blue_team_bans:
         for k,v in i.items():
             if k == "championId":
-                champion_name = db_conn.find_champion_by_id(v)
-                
-                i[k] = champion_name
+                if v == -1:
+                    i[k] = "None"
+                else:
+                    champion_name = db_conn.find_champion_by_id(v)
+                    
+                    i[k] = champion_name
             else:
                 continue
     
@@ -147,7 +150,6 @@ def clean_game_data(game_data):
     game_data["game_end_time"] = basic.sum_data(game_data["game_creation_time"], game_data["game_duration"])
 
     return game_data
-
 
 def organize_match_timeline_data(match_dict):
     pass
