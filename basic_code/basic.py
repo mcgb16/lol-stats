@@ -1,4 +1,4 @@
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 
 def calculate_time_seconds(sec_time):
     sec_time = int(sec_time)
@@ -32,3 +32,10 @@ def sum_data(initial_data, sum_time):
     formatted_final_data = final_data.strftime("%d-%m-%Y %H:%M:%S")
 
     return formatted_final_data
+
+def ask_name_tag():
+    player_name = input("Digite seu nick (sem a tag): ")
+    player_tag = input("Digite sua tag: ")
+
+    return player_name, player_tag
+
