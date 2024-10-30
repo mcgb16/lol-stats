@@ -1,4 +1,6 @@
 from datetime import datetime, timedelta
+import lol_infos.lol_data_cleaning as ldc
+import mongo_code.db_connection as db_conn
 
 def calculate_time_seconds(sec_time):
     sec_time = int(sec_time)
@@ -39,3 +41,32 @@ def ask_name_tag():
 
     return player_name, player_tag
 
+def save_player_history(lol_acc, lol_acc_puuid):
+    all_matchs = lol_acc.get_all_matchs(lol_acc_puuid)
+
+    match_infos = []
+
+    for i in all_matchs:
+        match_exists_db = db_conn.find_match(i)
+        if match_exists_db == None:
+            match_infos.append(lol_acc.get_match_geral_info(i))
+        else:
+            continue
+
+    match_data_organized = []
+
+    for i in match_infos:
+        match_data_organized.append(ldc.organize_match_geral_data(i))
+
+    match_data_cleaned = []
+
+    for i in match_data_organized:
+        i["teams_data"] = ldc.clean_teams_data(i["teams_data"])
+        i["game_data"] = ldc.clean_game_data(i["game_data"])
+        i["players_data"] = ldc.clean_players_data(i["players_data"])
+
+        match_data_cleaned.append(i)
+        
+    save_match_db = db_conn.create_match_db(match_data_cleaned)
+
+    return save_match_db
