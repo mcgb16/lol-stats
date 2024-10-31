@@ -1,5 +1,6 @@
 import lol_infos.lol_apis as la
 import basic_code.basic as basic
+import lol_infos.lol_data_analysis as lda
 
 if __name__ == "__main__":
     pl_name, pl_tag = basic.ask_name_tag()
@@ -9,4 +10,6 @@ if __name__ == "__main__":
 
     pl_history_save = basic.save_player_history(lol_acc, lol_acc_puuid)
 
-    print(pl_history_save)
+    player_analysis = lda.AnalysePlayer(lol_acc_puuid)
+
+    player_analysis.create_player_analysis()
