@@ -56,7 +56,11 @@ def save_player_history(lol_acc, lol_acc_puuid):
     match_data_organized = []
 
     for i in match_infos:
-        match_data_organized.append(ldc.organize_match_geral_data(i))
+        try: 
+            match_data_organized.append(ldc.organize_match_geral_data(i))
+        except Exception as e:
+            print(f"Erro ocorreu ao tentar organizar as informações da partida.: {e}")
+            continue
 
     match_data_cleaned = []
 
