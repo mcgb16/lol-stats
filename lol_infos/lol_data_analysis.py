@@ -74,8 +74,181 @@ class AnalysePlayer:
         
         return player_info_df, game_info_df, bans_info_df, teams_info_df
     
-    def numerical_analysis(self):
-        pass
+    def __numerical_analysis(self, player_df):
+        # Médias
+        kp_mean = np.mean(player_df['kp'])
+        dpm_champion_mean = np.mean(player_df['dpmChampions'])
+        dpm_turret_mean = np.mean(player_df['dpmTurrets'])
+        dpm_total_mean = np.mean(player_df['dpmTotal'])
+        fpm_mean = np.mean(player_df['fpm'])
+        kda_mean = np.mean(player_df['kda'])
+        gold_earned_mean = np.mean(player_df['goldEarned'])
+        gold_spent_mean = np.mean(player_df['goldSpent'])
+        gold_efficiency_mean = np.mean(player_df['goldEfficiency'])
+        vision_score_mean = np.mean(player_df['visionScore'])
+        fb_kill_mean = np.mean(player_df['firstBloodKill'])
+        fb_assist_mean = np.mean(player_df['firstBloodAssist'])
+        fb_participation_mean = fb_kill_mean + fb_assist_mean
+        ft_kill_mean = np.mean(player_df['firstTowerKill'])
+        ft_assist_mean = np.mean(player_df['firstTowerAssist'])
+        ft_participation_mean = ft_kill_mean + ft_assist_mean
+        team_gold_percentage_mean = np.mean(player_df['percentageTeamGold'])
+        team_dpm_percentage_mean = np.mean(player_df['percentageTeamDpmChampions'])
+
+        # Extremos
+        max_kda = np.max(player_df['kda'])
+        min_kda = np.min(player_df['kda'])
+        max_kp = np.max(player_df['kp'])
+        min_kp = np.min(player_df['kp'])
+        max_fpm = np.max(player_df['fpm'])
+        min_fpm = np.min(player_df['fpm'])
+        max_dpm_champions = np.max(player_df['dpmChampions'])
+        max_dpm_turrets = np.max(player_df['dpmTurrets'])
+        min_dpm_champions = np.min(player_df['dpmChampions'])
+        min_dpm_turrets = np.min(player_df['dpmTurrets'])
+        max_vision_score = np.max(player_df['visionScore'])
+        min_vision_score = np.min(player_df['visionScore'])
+        max_percentage_gold = np.max(player_df['percentageTeamGold'])
+        min_percentage_gold = np.min(player_df['percentageTeamGold'])
+        max_percentage_dpm_champions = np.max(player_df['percentageTeamDpmChampions'])
+        min_percentage_dpm_champions = np.min(player_df['percentageTeamDpmChampions'])
+        max_gold_efficiency = np.max(player_df['goldEfficiency'])
+        min_gold_efficiency = np.min(player_df['goldEfficiency'])
+
+        max_min_dict = {
+            "max_kda": max_kda,
+            "min_kda": min_kda,
+            "max_kp": max_kp,
+            "min_kp": min_kp,
+            "max_fpm": max_fpm,
+            "min_fpm": min_fpm,
+            "max_dpm_champions": max_dpm_champions,
+            "min_dpm_champions": min_dpm_champions,
+            "max_dpm_turrets": max_dpm_turrets,
+            "min_dpm_turrets": min_dpm_turrets,
+            "max_vision_score": max_vision_score,
+            "min_vision_score": min_vision_score,
+            "max_percentage_gold": max_percentage_gold,
+            "min_percentage_gold": min_percentage_gold,
+            "max_percentage_dpm_champions": max_percentage_dpm_champions,
+            "min_percentage_dpm_champions": min_percentage_dpm_champions,
+            "max_gold_efficiency": max_gold_efficiency,
+            "min_gold_efficiency": min_gold_efficiency
+        }
+
+        mean_dict = {
+            "kp": kp_mean,
+            "dpm_champion": dpm_champion_mean,
+            "dpm_turret": dpm_turret_mean,
+            "dpm_total": dpm_total_mean,
+            "fpm": fpm_mean,
+            "kda": kda_mean,
+            "gold_earned": gold_earned_mean,
+            "gold_spent": gold_spent_mean,
+            "gold_efficiency": gold_efficiency_mean,
+            "vision_score": vision_score_mean,
+            "fb_kill": fb_kill_mean,
+            "fb_assist": fb_assist_mean,
+            "fb_participation": fb_participation_mean,
+            "ft_kill": ft_kill_mean,
+            "ft_assist": ft_assist_mean,
+            "ft_participation": ft_participation_mean,
+            "team_gold_percentage": team_gold_percentage_mean,
+            "team_dpm_percentage": team_dpm_percentage_mean
+        }
+
+        max_min_df = pd.DataFrame([max_min_dict])
+        mean_df = pd.DataFrame([mean_dict])
+
+        return mean_df, max_min_df
+    
+    def __grouped_numerical_analysis(self, player_df):
+        # Médias
+        kp_mean = player_df['kp'].mean()
+        dpm_champion_mean = player_df['dpmChampions'].mean()
+        dpm_turret_mean = player_df['dpmTurrets'].mean()
+        dpm_total_mean = player_df['dpmTotal'].mean()
+        fpm_mean = player_df['fpm'].mean()
+        kda_mean = player_df['kda'].mean()
+        gold_earned_mean = player_df['goldEarned'].mean()
+        gold_spent_mean = player_df['goldSpent'].mean()
+        gold_efficiency_mean = player_df['goldEfficiency'].mean()
+        vision_score_mean = player_df['visionScore'].mean()
+        fb_kill_mean = player_df['firstBloodKill'].mean()
+        fb_assist_mean = player_df['firstBloodAssist'].mean()
+        fb_participation_mean = fb_kill_mean + fb_assist_mean
+        ft_kill_mean = player_df['firstTowerKill'].mean()
+        ft_assist_mean = player_df['firstTowerAssist'].mean()
+        ft_participation_mean = ft_kill_mean + ft_assist_mean
+        team_gold_percentage_mean = player_df['percentageTeamGold'].mean()
+        team_dpm_percentage_mean = player_df['percentageTeamDpmChampions'].mean()
+
+        # Extremos
+        max_kda = player_df['kda'].max()
+        min_kda = player_df['kda'].min()
+        max_kp = player_df['kp'].max()
+        min_kp = player_df['kp'].min()
+        max_fpm = player_df['fpm'].max()
+        min_fpm = player_df['fpm'].min()
+        max_dpm_champions = player_df['dpmChampions'].max()
+        max_dpm_turrets = player_df['dpmTurrets'].min()
+        min_dpm_champions = player_df['dpmChampions'].max()
+        min_dpm_turrets = player_df['dpmTurrets'].min()
+        max_vision_score = player_df['visionScore'].max()
+        min_vision_score = player_df['visionScore'].min()
+        max_percentage_gold = player_df['percentageTeamGold'].max()
+        min_percentage_gold = player_df['percentageTeamGold'].min()
+        max_percentage_dpm_champions = player_df['percentageTeamDpmChampions'].max()
+        min_percentage_dpm_champions = player_df['percentageTeamDpmChampions'].min()
+        max_gold_efficiency = player_df['goldEfficiency'].max()
+        min_gold_efficiency = player_df['goldEfficiency'].min()
+
+        max_min_dict = {
+            "max_kda": max_kda,
+            "min_kda": min_kda,
+            "max_kp": max_kp,
+            "min_kp": min_kp,
+            "max_fpm": max_fpm,
+            "min_fpm": min_fpm,
+            "max_dpm_champions": max_dpm_champions,
+            "min_dpm_champions": min_dpm_champions,
+            "max_dpm_turrets": max_dpm_turrets,
+            "min_dpm_turrets": min_dpm_turrets,
+            "max_vision_score": max_vision_score,
+            "min_vision_score": min_vision_score,
+            "max_percentage_gold": max_percentage_gold,
+            "min_percentage_gold": min_percentage_gold,
+            "max_percentage_dpm_champions": max_percentage_dpm_champions,
+            "min_percentage_dpm_champions": min_percentage_dpm_champions,
+            "max_gold_efficiency": max_gold_efficiency,
+            "min_gold_efficiency": min_gold_efficiency
+        }
+
+        mean_dict = {
+            "kp": kp_mean,
+            "dpm_champion": dpm_champion_mean,
+            "dpm_turret": dpm_turret_mean,
+            "dpm_total": dpm_total_mean,
+            "fpm": fpm_mean,
+            "kda": kda_mean,
+            "gold_earned": gold_earned_mean,
+            "gold_spent": gold_spent_mean,
+            "gold_efficiency": gold_efficiency_mean,
+            "vision_score": vision_score_mean,
+            "fb_kill": fb_kill_mean,
+            "fb_assist": fb_assist_mean,
+            "fb_participation": fb_participation_mean,
+            "ft_kill": ft_kill_mean,
+            "ft_assist": ft_assist_mean,
+            "ft_participation": ft_participation_mean,
+            "team_gold_percentage": team_gold_percentage_mean,
+            "team_dpm_percentage": team_dpm_percentage_mean
+        }
+
+        max_min_df = pd.DataFrame(max_min_dict)
+        mean_df = pd.DataFrame(mean_dict)
+
+        return mean_df, max_min_df
 
     def create_player_analysis(self):
         all_pl_df, all_games_df, all_bans_df, all_teams_df = self.__create_dfs_classic()
@@ -88,134 +261,9 @@ class AnalysePlayer:
         
         current_player_df = all_pl_df[all_pl_df['puuid'] == self.puuid]
 
-        # Média de KP
-        kp_mean = np.mean(current_player_df['kp'])
-        print(f"KP: {kp_mean}")
+        champions_current_player_df = current_player_df.groupby('championName')
 
-        # Média de DPM em Champions
-        dpm_champion_mean = np.mean(current_player_df['dpmChampions'])
-        print(f"DPM Champions: {dpm_champion_mean}")
+        no_filter_mean_df, no_filter_max_min_df = self.__numerical_analysis(current_player_df)
+        champion_mean_df, champion_max_min_df = self.__grouped_numerical_analysis(champions_current_player_df)
 
-        # Média de DPM em Turrets
-        dpm_turret_mean = np.mean(current_player_df['dpmTurrets'])
-        print(f"DPM Turrets: {dpm_turret_mean}")
-
-        # Média de DPM Total
-        dpm_total_mean = np.mean(current_player_df['dpmTotal'])
-        print(f"DPM Total: {dpm_total_mean}")
-
-        # Média de FPM
-        fpm_mean = np.mean(current_player_df['fpm'])
-        print(f"FPM: {fpm_mean}")
-
-        # Média de KDA
-        kda_mean = np.mean(current_player_df['kda'])
-        print(f"KDA: {kda_mean}")
-
-        # Média de Gold Earned
-        gold_earned_mean = np.mean(current_player_df['goldEarned'])
-        print(f"Gold Earned: {gold_earned_mean}")
-
-        # Média de Gold Spent
-        gold_spent_mean = np.mean(current_player_df['goldSpent'])
-        print(f"Gold Spent: {gold_spent_mean}")
-
-        # Média de Gold Efficiency
-        gold_efficiency_mean = np.mean(current_player_df['goldEfficiency'])
-        print(f"Gold Efficiency: {gold_efficiency_mean}")
-
-        # Média de Vision Score
-        vision_score_mean = np.mean(current_player_df['visionScore'])
-        print(f"Vision Score: {vision_score_mean}")
-
-        # Média de Participação em FB
-        fb_kill_mean = np.mean(current_player_df['firstBloodKill'])
-        fb_assist_mean = np.mean(current_player_df['firstBloodAssist'])
-        fb_participation_mean = fb_kill_mean + fb_assist_mean
-        print(f"First Blood Participation: {fb_participation_mean}")
-
-        # Média de Participação em First Tower
-        ft_kill_mean = np.mean(current_player_df['firstTowerKill'])
-        ft_assist_mean = np.mean(current_player_df['firstTowerAssist'])
-        ft_participation_mean = ft_kill_mean + ft_assist_mean
-        print(f"First Tower Participation: {ft_participation_mean}")
-
-        # % Média de Gold da Equipe
-        team_gold_percentage_mean = np.mean(current_player_df['percentageTeamGold'])
-        print(f"Percentage Team Gold: {team_gold_percentage_mean}")
-
-        # % Média de DPM da Equipe
-        team_dpm_percentage_mean = np.mean(current_player_df['percentageTeamDpmChampions'])
-        print(f"Percentage Team DPM Champions: {team_dpm_percentage_mean}")
-
-        # Melhor KDA
-        max_kda = np.max(current_player_df['kda'])
-        print(f"Best KDA: {max_kda}")
-
-        # Pior KDA
-        min_kda = np.min(current_player_df['kda'])
-        print(f"Worst KDA: {min_kda}")
-
-        # Maior KP
-        max_kp = np.max(current_player_df['kp'])
-        print(f"Best KP: {max_kp}")
-        
-        # Menor KP
-        min_kp = np.min(current_player_df['kp'])
-        print(f"Worst KP: {min_kp}")
-
-        # Maior FPM
-        max_fpm = np.max(current_player_df['fpm'])
-        print(f"Best FPM: {max_fpm}")
-
-        # Menor FPM
-        min_fpm = np.min(current_player_df['fpm'])
-        print(f"Worst FPM: {min_fpm}")
-        
-        # Maior dpm
-        max_dpm_champions = np.max(current_player_df['dpmChampions'])
-        print(f"Best DPM Champions: {max_dpm_champions}")
-
-        max_dpm_turrets = np.max(current_player_df['dpmTurrets'])
-        print(f"Best DPM Turrets: {max_dpm_turrets}")
-
-        # Menor dpm
-        min_dpm_champions = np.min(current_player_df['dpmChampions'])
-        print(f"Worst DPM Champions: {min_dpm_champions}")
-
-        min_dpm_turrets = np.min(current_player_df['dpmTurrets'])
-        print(f"Worst DPM Turrets: {min_dpm_turrets}")
-
-        # Maior vision score
-        max_vision_score = np.max(current_player_df['visionScore'])
-        print(f"Best Vision Score: {max_vision_score}")
-
-        # Menor vision score
-        min_vision_score = np.min(current_player_df['visionScore'])
-        print(f"Worst Vision Score: {min_vision_score}")
-
-        # Maior % gold/equipe
-        max_percentage_gold = np.max(current_player_df['percentageTeamGold'])
-        print(f"Best % Team Gold: {max_percentage_gold}")
-
-        # Menor % gold/equipe
-        min_percentage_gold = np.min(current_player_df['percentageTeamGold'])
-        print(f"Worst % Team Gold: {min_percentage_gold}")
-
-        # Maior % de dano/equipe
-        max_percentage_dpm_champions = np.max(current_player_df['percentageTeamDpmChampions'])
-        print(f"Best % Team DPM Champions: {max_percentage_dpm_champions}")
-
-        # Menor % de dano/equipe
-        min_percentage_dpm_champions = np.min(current_player_df['percentageTeamDpmChampions'])
-        print(f"Worst % Team DPM Champions: {min_percentage_dpm_champions}")
-        
-        # Maior gold efficiency (dano/gold)
-        max_gold_efficiency = np.max(current_player_df['goldEfficiency'])
-        print(f"Best Gold Efficiency: {max_gold_efficiency}")
-
-        # Menor gold efficiency (dano/gold)
-        min_gold_efficiency = np.min(current_player_df['goldEfficiency'])
-        print(f"Worst Gold Efficiency: {min_gold_efficiency}")
-
-        return
+        return 
