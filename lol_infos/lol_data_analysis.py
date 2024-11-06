@@ -2,6 +2,7 @@ import matplotlib as mpl
 import pandas as pd
 import numpy as np
 import mongo_code.db_connection as db_conn
+import basic_code.basic as basic
 
 class AnalysePlayer:
     def __init__(self, puuid):
@@ -19,7 +20,9 @@ class AnalysePlayer:
         teams_info_df = pd.DataFrame()
 
         for m in match_history:
-            if m['game_data']['game_mode'] == "CLASSIC":
+            game_check = basic.check_invalid_game(m['game_data']['game_duration'])
+
+            if m['game_data']['game_mode'] == "CLASSIC" and game_check == 'valid':
                 match_id = m["match_id"]
 
                 player_df = pd.DataFrame(m["players_data"])
@@ -145,24 +148,74 @@ class AnalysePlayer:
         team_dpm_percentage_mean = np.mean(current_player_df['percentageTeamDpmChampions'])
         print(f"Percentage Team DPM Champions: {team_dpm_percentage_mean}")
 
-
         # Melhor KDA
+        max_kda = np.max(current_player_df['kda'])
+        print(f"Best KDA: {max_kda}")
+
         # Pior KDA
+        min_kda = np.min(current_player_df['kda'])
+        print(f"Worst KDA: {min_kda}")
+
         # Maior KP
+        max_kp = np.max(current_player_df['kp'])
+        print(f"Best KP: {max_kp}")
+        
         # Menor KP
+        min_kp = np.min(current_player_df['kp'])
+        print(f"Worst KP: {min_kp}")
+
         # Maior FPM
+        max_fpm = np.max(current_player_df['fpm'])
+        print(f"Best FPM: {max_fpm}")
+
         # Menor FPM
+        min_fpm = np.min(current_player_df['fpm'])
+        print(f"Worst FPM: {min_fpm}")
+        
         # Maior dpm
+        max_dpm_champions = np.max(current_player_df['dpmChampions'])
+        print(f"Best DPM Champions: {max_dpm_champions}")
+
+        max_dpm_turrets = np.max(current_player_df['dpmTurrets'])
+        print(f"Best DPM Turrets: {max_dpm_turrets}")
+
         # Menor dpm
+        min_dpm_champions = np.min(current_player_df['dpmChampions'])
+        print(f"Worst DPM Champions: {min_dpm_champions}")
+
+        min_dpm_turrets = np.min(current_player_df['dpmTurrets'])
+        print(f"Worst DPM Turrets: {min_dpm_turrets}")
+
         # Maior vision score
+        max_vision_score = np.max(current_player_df['visionScore'])
+        print(f"Best Vision Score: {max_vision_score}")
+
         # Menor vision score
+        min_vision_score = np.min(current_player_df['visionScore'])
+        print(f"Worst Vision Score: {min_vision_score}")
+
         # Maior % gold/equipe
+        max_percentage_gold = np.max(current_player_df['percentageTeamGold'])
+        print(f"Best % Team Gold: {max_percentage_gold}")
+
         # Menor % gold/equipe
+        min_percentage_gold = np.min(current_player_df['percentageTeamGold'])
+        print(f"Worst % Team Gold: {min_percentage_gold}")
+
         # Maior % de dano/equipe
+        max_percentage_dpm_champions = np.max(current_player_df['percentageTeamDpmChampions'])
+        print(f"Best % Team DPM Champions: {max_percentage_dpm_champions}")
+
         # Menor % de dano/equipe
+        min_percentage_dpm_champions = np.min(current_player_df['percentageTeamDpmChampions'])
+        print(f"Worst % Team DPM Champions: {min_percentage_dpm_champions}")
+        
         # Maior gold efficiency (dano/gold)
+        max_gold_efficiency = np.max(current_player_df['goldEfficiency'])
+        print(f"Best Gold Efficiency: {max_gold_efficiency}")
+
         # Menor gold efficiency (dano/gold)
-
-
+        min_gold_efficiency = np.min(current_player_df['goldEfficiency'])
+        print(f"Worst Gold Efficiency: {min_gold_efficiency}")
 
         return
