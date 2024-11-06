@@ -70,3 +70,15 @@ def save_player_history(lol_acc, lol_acc_puuid):
     save_match_db = db_conn.create_match_db(match_data_cleaned)
 
     return save_match_db
+
+def check_invalid_game(game_duration):
+    minutes, seconds = map(int,game_duration.split(":"))
+
+    game_duration_time = timedelta(minutes=minutes, seconds=seconds)
+
+    time_limit = timedelta(minutes=15,seconds=0)
+
+    if game_duration_time < time_limit:
+        return "invalid"
+    else:
+        return "valid"
