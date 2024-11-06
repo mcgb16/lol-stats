@@ -65,9 +65,15 @@ def organize_match_geral_data(match_dict):
         players_info_list[i]["goldEfficiency"] = ((players_info_list[i]["physicalDamageDealtToChampions"] + players_info_list[i]["magicDamageDealtToChampions"] + players_info_list[i]["damageDealtToTurrets"]) / players_info_list[i]["goldEarned"])
         
         if players_info_list[i]["teamId"] == match_dict['info']['teams'][0]["teamId"]:
-            players_info_list[i]["kp"] = ((players_info_list[i]["kills"] + players_info_list[i]["assists"]) / match_dict['info']['teams'][0]["objectives"]["champion"]["kills"]) * 100
+            try:
+                players_info_list[i]["kp"] = ((players_info_list[i]["kills"] + players_info_list[i]["assists"]) / match_dict['info']['teams'][0]["objectives"]["champion"]["kills"]) * 100
+            except:
+                players_info_list[i]["kp"] = 0
         else:
-            players_info_list[i]["kp"] = ((players_info_list[i]["kills"] + players_info_list[i]["assists"]) / match_dict['info']['teams'][1]["objectives"]["champion"]["kills"]) * 100
+            try:
+                players_info_list[i]["kp"] = ((players_info_list[i]["kills"] + players_info_list[i]["assists"]) / match_dict['info']['teams'][1]["objectives"]["champion"]["kills"]) * 100
+            except:
+                players_info_list[i]["kp"] = 0
     
     match_data = {
         'match_id': match_dict['metadata']['matchId'],
