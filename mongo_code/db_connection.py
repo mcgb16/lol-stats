@@ -39,14 +39,16 @@ def find_runes(id_rune):
     }
 
     response = runes_collection.find_one(search_rune)
+    try:
+        for i in response['slots']:
+            for k in i['runes']:
+                if k['id'] == id_rune:
+                    get_rune = k['name']
+                    break
 
-    for i in response['slots']:
-        for k in i['runes']:
-            if k['id'] == id_rune:
-                get_rune = k['name']
-                break
-
-    return get_rune
+        return get_rune
+    except:
+        return "No rune find."
 
 def find_summoner_spells(id_spell):
     get_last_doc = [("_id", -1)]
