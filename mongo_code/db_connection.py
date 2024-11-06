@@ -16,13 +16,16 @@ def find_items(id_item):
     get_last_doc = [("_id", -1)]
     response = items_collection.find_one(sort=get_last_doc)
 
-    if id_item == 0:
-        return "None"
-    else:
-        id_item = str(id_item)
-        get_item = response['data'][id_item]['name']
+    try:
+        if id_item == 0:
+            return "None"
+        else:
+            id_item = str(id_item)
+            get_item = response['data'][id_item]['name']
 
-        return get_item
+            return get_item
+    except:
+        return "No item found."
 
 def find_runes(id_rune):
     id_rune = int(id_rune)
@@ -151,7 +154,7 @@ def find_queue_type(queue_id):
     return queue_type
 
 
-# print(find_items("3153"))
+# print(find_items("7004"))
 # print(find_runes("8008"))
 # print(find_summoner_spells("7"))
 # print(find_champion_by_id("22"))
