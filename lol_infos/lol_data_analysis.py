@@ -1,4 +1,4 @@
-import matplotlib as mpl
+import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import mongo_code.db_connection as db_conn
@@ -79,7 +79,6 @@ class AnalysePlayer:
         kp_mean = np.mean(player_df['kp'])
         dpm_champion_mean = np.mean(player_df['dpmChampions'])
         dpm_turret_mean = np.mean(player_df['dpmTurrets'])
-        dpm_total_mean = np.mean(player_df['dpmTotal'])
         fpm_mean = np.mean(player_df['fpm'])
         kda_mean = np.mean(player_df['kda'])
         gold_earned_mean = np.mean(player_df['goldEarned'])
@@ -140,7 +139,6 @@ class AnalysePlayer:
             "kp": kp_mean,
             "dpm_champion": dpm_champion_mean,
             "dpm_turret": dpm_turret_mean,
-            "dpm_total": dpm_total_mean,
             "fpm": fpm_mean,
             "kda": kda_mean,
             "gold_earned": gold_earned_mean,
@@ -167,7 +165,6 @@ class AnalysePlayer:
         kp_mean = player_df['kp'].mean()
         dpm_champion_mean = player_df['dpmChampions'].mean()
         dpm_turret_mean = player_df['dpmTurrets'].mean()
-        dpm_total_mean = player_df['dpmTotal'].mean()
         fpm_mean = player_df['fpm'].mean()
         kda_mean = player_df['kda'].mean()
         gold_earned_mean = player_df['goldEarned'].mean()
@@ -228,7 +225,6 @@ class AnalysePlayer:
             "kp": kp_mean,
             "dpm_champion": dpm_champion_mean,
             "dpm_turret": dpm_turret_mean,
-            "dpm_total": dpm_total_mean,
             "fpm": fpm_mean,
             "kda": kda_mean,
             "gold_earned": gold_earned_mean,
@@ -250,6 +246,9 @@ class AnalysePlayer:
 
         return mean_df, max_min_df
 
+    def __create_dashboards(self, mean_df, max_min_df):
+        pass
+
     def create_player_analysis(self):
         all_pl_df, all_games_df, all_bans_df, all_teams_df = self.__create_dfs_classic()
 
@@ -267,4 +266,6 @@ class AnalysePlayer:
         champion_mean_df, champion_max_min_df = self.__grouped_numerical_analysis(champions_current_player_df)
         role_mean_df, role_max_min_df = self.__grouped_numerical_analysis(role_current_player_df)
 
-        return 
+        a = self.__create_dashboards(champion_mean_df, champion_max_min_df)
+
+        return
