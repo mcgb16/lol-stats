@@ -260,10 +260,11 @@ class AnalysePlayer:
         all_pl_df['percentageTeamGold'] = np.round((all_pl_df['goldEarned'] / all_pl_df["totalTeamGold"])*100, 2)
         
         current_player_df = all_pl_df[all_pl_df['puuid'] == self.puuid]
-
         champions_current_player_df = current_player_df.groupby('championName')
+        role_current_player_df = current_player_df.groupby('teamPosition')
 
         no_filter_mean_df, no_filter_max_min_df = self.__numerical_analysis(current_player_df)
         champion_mean_df, champion_max_min_df = self.__grouped_numerical_analysis(champions_current_player_df)
+        role_mean_df, role_max_min_df = self.__grouped_numerical_analysis(role_current_player_df)
 
         return 
