@@ -1,4 +1,4 @@
-import matplotlib as mpl
+import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import mongo_code.db_connection as db_conn
@@ -79,7 +79,6 @@ class AnalysePlayer:
         kp_mean = np.mean(player_df['kp'])
         dpm_champion_mean = np.mean(player_df['dpmChampions'])
         dpm_turret_mean = np.mean(player_df['dpmTurrets'])
-        dpm_total_mean = np.mean(player_df['dpmTotal'])
         fpm_mean = np.mean(player_df['fpm'])
         kda_mean = np.mean(player_df['kda'])
         gold_earned_mean = np.mean(player_df['goldEarned'])
@@ -140,7 +139,6 @@ class AnalysePlayer:
             "kp": kp_mean,
             "dpm_champion": dpm_champion_mean,
             "dpm_turret": dpm_turret_mean,
-            "dpm_total": dpm_total_mean,
             "fpm": fpm_mean,
             "kda": kda_mean,
             "gold_earned": gold_earned_mean,
@@ -167,7 +165,6 @@ class AnalysePlayer:
         kp_mean = player_df['kp'].mean()
         dpm_champion_mean = player_df['dpmChampions'].mean()
         dpm_turret_mean = player_df['dpmTurrets'].mean()
-        dpm_total_mean = player_df['dpmTotal'].mean()
         fpm_mean = player_df['fpm'].mean()
         kda_mean = player_df['kda'].mean()
         gold_earned_mean = player_df['goldEarned'].mean()
@@ -228,7 +225,6 @@ class AnalysePlayer:
             "kp": kp_mean,
             "dpm_champion": dpm_champion_mean,
             "dpm_turret": dpm_turret_mean,
-            "dpm_total": dpm_total_mean,
             "fpm": fpm_mean,
             "kda": kda_mean,
             "gold_earned": gold_earned_mean,
@@ -250,6 +246,96 @@ class AnalysePlayer:
 
         return mean_df, max_min_df
 
+    def __create_mean_plots(self, mean_df):
+        # plots: fb/ft ; %g/%d/%kp ; dpmc/dpmt/ge/gs/geff ; vs/kda/fpm
+        fig, axes = plt.subplots(2, 2, figsize=(10, 6))
+
+        fb_plot = axes [0,0]
+        team_comparison_plot = axes [0,1]
+        dmg_gold_plot = axes [1,0]
+        basic_plot = axes [1,1]
+
+        bar_width = 0.35
+        indices = range(len(mean_df))
+
+        for i, champion in enumerate(mean_df.index):
+            fb_plot.barh(indices[i] - bar_width / 2, mean_df.loc[champion, "fb_kill"], height=bar_width, label='FB Kill' if i == 0 else "", color='skyblue')
+    
+            # Barra para FB Assist (empilhada após FB Kill)
+            fb_plot.barh(indices[i] - bar_width / 2, mean_df.loc[champion, "fb_assist"], height=bar_width, left=mean_df.loc[champion, "fb_kill"], label='FB Assist' if i == 0 else "", color='dodgerblue')
+
+            # Barra para FT Kill (em um nível diferente de FB)
+            fb_plot.barh(indices[i] + bar_width / 2, mean_df.loc[champion, "ft_kill"], height=bar_width, label='FT Kill' if i == 0 else "", color='lightgreen')
+            
+            # Barra para FT Assist (empilhada após FT Kill)
+            fb_plot.barh(indices[i] + bar_width / 2, mean_df.loc[champion, "ft_assist"], height=bar_width, left=mean_df.loc[champion, "ft_kill"], label='FT Assist' if i == 0 else "", color='green')
+
+            dmg_gold_plot.bar(indices[i] - bar_width / 2, mean_df.loc[champion, "dpm_champion"], width=bar_width, label='DPM Champion' if i == 0 else "", color='skyblue')
+            dmg_gold_plot.bar(indices[i] + bar_width / 2, mean_df.loc[champion, "dpm_turret"], width=bar_width, label='DPM Turret' if i == 0 else "", color='dodgerblue')
+
+            basic_plot.bar(indices[i] + bar_width / 2, mean_df.loc[champion, "kda"], width=bar_width, label='KDA' if i == 0 else "", color='dodgerblue')
+
+        ax3 = basic_plot.twinx()
+        ax3.plot(indices,mean_df["fpm"], color='red', marker='o', linestyle='-', label='Farm per Minute', linewidth=2)
+        ax3.plot(indices,mean_df["vision_score"], color='purple', marker='^', linestyle='--', label='Vision Score per Minute', linewidth=2)
+        ax3.set_ylabel('Farm/Vision Score per Minute')
+
+        lines, labels = basic_plot.get_legend_handles_labels()
+        lines2, labels2 = ax3.get_legend_handles_labels()
+        
+        lines.extend(lines2)
+        labels.extend(labels2)
+
+        ax3.legend(lines, labels, loc='upper right')
+
+        dmg_gold_plot.plot(indices, mean_df["gold_earned"], color='green', marker='o', linestyle='-', label='Gold Earned', linewidth=2)
+        dmg_gold_plot.plot(indices, mean_df["gold_spent"], color='orange', marker='o', linestyle='--', label='Gold Spent', linewidth=2)
+
+        ax2 = dmg_gold_plot.twinx()
+        ax2.plot(indices, mean_df["gold_efficiency"], color='red', marker='*', linestyle='', label='Gold Efficiency', linewidth=2)
+        ax2.set_ylabel('Gold Efficiency')
+
+        fb_plot.set_yticks(indices)
+        fb_plot.set_yticklabels(mean_df.index)
+        fb_plot.set_ylabel('Campeões')
+        fb_plot.set_xlabel('Quantidade')
+        fb_plot.set_title('Participação em First Blood e First Tower por Campeão')
+        fb_plot.legend(loc='upper right')
+        
+        dmg_gold_plot.set_xticks(indices)
+        dmg_gold_plot.set_xticklabels(mean_df.index)
+        dmg_gold_plot.set_xlabel('Campeões')
+        dmg_gold_plot.set_ylabel('Quantidade')
+        dmg_gold_plot.set_title('Relação de Dano e Gold por Campeão')
+
+        basic_plot.set_xticks(indices)
+        basic_plot.set_xticklabels(mean_df.index)
+        basic_plot.set_xlabel('Campeões')
+        basic_plot.set_ylabel('Quantidade')
+        basic_plot.set_title('Relação de Dano e Gold por Campeão')
+        
+        lines, labels = dmg_gold_plot.get_legend_handles_labels()
+        lines2, labels2 = ax2.get_legend_handles_labels()
+        
+        lines.extend(lines2)
+        labels.extend(labels2)
+
+        ax2.legend(lines, labels, loc='upper right')
+
+        team_comparison_plot.plot(indices, mean_df["team_gold_percentage"], color='green', marker='o', linestyle='-', label='% De Gold', linewidth=2)
+        team_comparison_plot.plot(indices, mean_df["team_dpm_percentage"], color='orange', marker='o', linestyle='--', label='% De DPM', linewidth=2)
+        team_comparison_plot.plot(indices, mean_df["kp"], color='red', marker='o', linestyle='-.', label='KP', linewidth=2)
+        team_comparison_plot.set_xticks(indices)
+        team_comparison_plot.set_xticklabels(mean_df.index, rotation=45) 
+        team_comparison_plot.set_ylabel('Gold | DPM | KP')
+        team_comparison_plot.legend(loc='upper right')
+
+
+        plt.tight_layout()
+        plt.show()
+        
+        return
+
     def create_player_analysis(self):
         all_pl_df, all_games_df, all_bans_df, all_teams_df = self.__create_dfs_classic()
 
@@ -260,10 +346,13 @@ class AnalysePlayer:
         all_pl_df['percentageTeamGold'] = np.round((all_pl_df['goldEarned'] / all_pl_df["totalTeamGold"])*100, 2)
         
         current_player_df = all_pl_df[all_pl_df['puuid'] == self.puuid]
-
         champions_current_player_df = current_player_df.groupby('championName')
+        role_current_player_df = current_player_df.groupby('teamPosition')
 
         no_filter_mean_df, no_filter_max_min_df = self.__numerical_analysis(current_player_df)
         champion_mean_df, champion_max_min_df = self.__grouped_numerical_analysis(champions_current_player_df)
+        role_mean_df, role_max_min_df = self.__grouped_numerical_analysis(role_current_player_df)
 
-        return 
+        champion_mean_plots = self.__create_mean_plots(champion_mean_df)
+
+        return
