@@ -319,26 +319,26 @@ class AnalysePlayer:
         ax2.set_ylabel('Gold Efficiency')
 
         fb_plot.set_yticks(indices)
-        fb_plot.set_yticklabels(mean_df.index)
+        fb_plot.set_yticklabels(mean_df.index, ha='right', va='top')
         fb_plot.set_ylabel('Campeões')
         fb_plot.set_xlabel('Quantidade')
         fb_plot.set_title('Participação em First Blood e First Tower por Campeão')
         fb_plot.legend(loc='upper right')
         
         dmg_gold_plot.set_xticks(indices)
-        dmg_gold_plot.set_xticklabels(mean_df.index)
+        dmg_gold_plot.set_xticklabels(mean_df.index, rotation=90, ha='right', va='top')
         dmg_gold_plot.set_xlabel('Campeões')
         dmg_gold_plot.set_ylabel('Quantidade')
         dmg_gold_plot.set_title('Relação de Dano e Gold por Campeão')
 
         winrate_plot.set_xticks(indices)
-        winrate_plot.set_xticklabels(mean_df.index)
+        winrate_plot.set_xticklabels(mean_df.index, rotation=90, ha='right', va='top')
         winrate_plot.set_xlabel('Campeões')
         winrate_plot.set_ylabel('Quantidade Jogos')
         winrate_plot.set_title('Winrate')
 
         basic_plot.set_xticks(indices)
-        basic_plot.set_xticklabels(mean_df.index)
+        basic_plot.set_xticklabels(mean_df.index, rotation=90, ha='right', va='top')
         basic_plot.set_xlabel('Campeões')
         basic_plot.set_ylabel('Quantidade')
         basic_plot.set_title('Relação de Dano e Gold por Campeão')
@@ -355,7 +355,7 @@ class AnalysePlayer:
         team_comparison_plot.plot(indices, mean_df["team_dpm_percentage"], color='orange', marker='o', linestyle='--', label='% De DPM', linewidth=2)
         team_comparison_plot.plot(indices, mean_df["kp"], color='red', marker='o', linestyle='-.', label='KP', linewidth=2)
         team_comparison_plot.set_xticks(indices)
-        team_comparison_plot.set_xticklabels(mean_df.index, rotation=45) 
+        team_comparison_plot.set_xticklabels(mean_df.index, rotation=90, ha='right', va='top') 
         team_comparison_plot.set_ylabel('Gold | DPM | KP')
         team_comparison_plot.legend(loc='upper right')
 
@@ -376,6 +376,7 @@ class AnalysePlayer:
         pickrate_plot2 = pickrate_plot.twinx()
         pickrate_plot2.plot(cumulative_percentage, color='red', marker='D', linestyle='-', label='Cumulativo (%)')
         pickrate_plot2.set_ylabel('Porcentagem Cumulativa (%)')
+        pickrate_plot2.set_xticklabels(mean_df.index, rotation=45) 
         pickrate_plot2.legend(loc='upper right')
 
         plt.tight_layout()
