@@ -46,7 +46,7 @@ class LolVerifier:
         endpoint = f"/lol/match/v5/matches/by-puuid/{puuid}/ids"
         url = self.base_url_region + endpoint
         match_api_params = self.api_params
-        match_api_params['count'] = 50
+        match_api_params['count'] = 85
         response = requests.get(url, params=self.api_params)
 
         response_checked = self.__check_response(response)
