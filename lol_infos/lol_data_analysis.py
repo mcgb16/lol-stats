@@ -74,47 +74,47 @@ class AnalysePlayer:
         
         return player_info_df, game_info_df, bans_info_df, teams_info_df
     
-    def __numerical_analysis(self, player_df):
+    def __numerical_analysis(self, p_df):
         # Médias
-        kp_mean = np.mean(player_df['kp'])
-        dpm_champion_mean = np.mean(player_df['dpmChampions'])
-        dpm_turret_mean = np.mean(player_df['dpmTurrets'])
-        fpm_mean = np.mean(player_df['fpm'])
-        kda_mean = np.mean(player_df['kda'])
-        gpm_mean = np.mean(player_df['gpm'])
-        gold_efficiency_mean = np.mean(player_df['goldEfficiency'])
-        vspm_mean = np.mean(player_df['vspm'])
-        fb_kill_mean = np.mean(player_df['firstBloodKill'])
-        fb_assist_mean = np.mean(player_df['firstBloodAssist'])
+        kp_mean = np.mean(p_df['kp'])
+        dpm_champion_mean = np.mean(p_df['dpmChampions'])
+        dpm_turret_mean = np.mean(p_df['dpmTurrets'])
+        fpm_mean = np.mean(p_df['fpm'])
+        kda_mean = np.mean(p_df['kda'])
+        gpm_mean = np.mean(p_df['gpm'])
+        gold_efficiency_mean = np.mean(p_df['goldEfficiency'])
+        vspm_mean = np.mean(p_df['vspm'])
+        fb_kill_mean = np.mean(p_df['firstBloodKill'])
+        fb_assist_mean = np.mean(p_df['firstBloodAssist'])
         fb_participation_mean = fb_kill_mean + fb_assist_mean
-        ft_kill_mean = np.mean(player_df['firstTowerKill'])
-        ft_assist_mean = np.mean(player_df['firstTowerAssist'])
+        ft_kill_mean = np.mean(p_df['firstTowerKill'])
+        ft_assist_mean = np.mean(p_df['firstTowerAssist'])
         ft_participation_mean = ft_kill_mean + ft_assist_mean
-        team_gold_percentage_mean = np.mean(player_df['percentageTeamGold'])
-        team_dpm_percentage_mean = np.mean(player_df['percentageTeamDpmChampions'])
-        winrate_mean = np.mean(player_df["win"])
-        wins = np.sum(player_df["win"])
-        loses = np.sum(player_df["win"] == False)
+        team_gold_percentage_mean = np.mean(p_df['percentageTeamGold'])
+        team_dpm_percentage_mean = np.mean(p_df['percentageTeamDpmChampions'])
+        winrate_mean = np.mean(p_df["win"])
+        wins = np.sum(p_df["win"])
+        loses = np.sum(p_df["win"] == False)
 
         # Extremos
-        max_kda = np.max(player_df['kda'])
-        min_kda = np.min(player_df['kda'])
-        max_kp = np.max(player_df['kp'])
-        min_kp = np.min(player_df['kp'])
-        max_fpm = np.max(player_df['fpm'])
-        min_fpm = np.min(player_df['fpm'])
-        max_dpm_champions = np.max(player_df['dpmChampions'])
-        max_dpm_turrets = np.max(player_df['dpmTurrets'])
-        min_dpm_champions = np.min(player_df['dpmChampions'])
-        min_dpm_turrets = np.min(player_df['dpmTurrets'])
-        max_vspm = np.max(player_df['vspm'])
-        min_vspm = np.min(player_df['vspm'])
-        max_percentage_gold = np.max(player_df['percentageTeamGold'])
-        min_percentage_gold = np.min(player_df['percentageTeamGold'])
-        max_percentage_dpm_champions = np.max(player_df['percentageTeamDpmChampions'])
-        min_percentage_dpm_champions = np.min(player_df['percentageTeamDpmChampions'])
-        max_gold_efficiency = np.max(player_df['goldEfficiency'])
-        min_gold_efficiency = np.min(player_df['goldEfficiency'])
+        max_kda = np.max(p_df['kda'])
+        min_kda = np.min(p_df['kda'])
+        max_kp = np.max(p_df['kp'])
+        min_kp = np.min(p_df['kp'])
+        max_fpm = np.max(p_df['fpm'])
+        min_fpm = np.min(p_df['fpm'])
+        max_dpm_champions = np.max(p_df['dpmChampions'])
+        max_dpm_turrets = np.max(p_df['dpmTurrets'])
+        min_dpm_champions = np.min(p_df['dpmChampions'])
+        min_dpm_turrets = np.min(p_df['dpmTurrets'])
+        max_vspm = np.max(p_df['vspm'])
+        min_vspm = np.min(p_df['vspm'])
+        max_percentage_gold = np.max(p_df['percentageTeamGold'])
+        min_percentage_gold = np.min(p_df['percentageTeamGold'])
+        max_percentage_dpm_champions = np.max(p_df['percentageTeamDpmChampions'])
+        min_percentage_dpm_champions = np.min(p_df['percentageTeamDpmChampions'])
+        max_gold_efficiency = np.max(p_df['goldEfficiency'])
+        min_gold_efficiency = np.min(p_df['goldEfficiency'])
 
         max_min_dict = {
             "max_kda": max_kda,
@@ -166,48 +166,48 @@ class AnalysePlayer:
 
         return mean_df, max_min_df
     
-    def __grouped_numerical_analysis(self, player_df):
+    def __grouped_numerical_analysis(self, p_df):
         # Médias
-        kp_mean = player_df['kp'].mean()
-        dpm_champion_mean = player_df['dpmChampions'].mean()
-        dpm_turret_mean = player_df['dpmTurrets'].mean()
-        fpm_mean = player_df['fpm'].mean()
-        kda_mean = player_df['kda'].mean()
-        gpm_mean = player_df['gpm'].mean()
-        gold_efficiency_mean = player_df['goldEfficiency'].mean()
-        vspm_mean = player_df['vspm'].mean()
-        fb_kill_mean = player_df['firstBloodKill'].mean()
-        fb_assist_mean = player_df['firstBloodAssist'].mean()
+        kp_mean = p_df['kp'].mean()
+        dpm_champion_mean = p_df['dpmChampions'].mean()
+        dpm_turret_mean = p_df['dpmTurrets'].mean()
+        fpm_mean = p_df['fpm'].mean()
+        kda_mean = p_df['kda'].mean()
+        gpm_mean = p_df['gpm'].mean()
+        gold_efficiency_mean = p_df['goldEfficiency'].mean()
+        vspm_mean = p_df['vspm'].mean()
+        fb_kill_mean = p_df['firstBloodKill'].mean()
+        fb_assist_mean = p_df['firstBloodAssist'].mean()
         fb_participation_mean = fb_kill_mean + fb_assist_mean
-        ft_kill_mean = player_df['firstTowerKill'].mean()
-        ft_assist_mean = player_df['firstTowerAssist'].mean()
+        ft_kill_mean = p_df['firstTowerKill'].mean()
+        ft_assist_mean = p_df['firstTowerAssist'].mean()
         ft_participation_mean = ft_kill_mean + ft_assist_mean
-        team_gold_percentage_mean = player_df['percentageTeamGold'].mean()
-        team_dpm_percentage_mean = player_df['percentageTeamDpmChampions'].mean()
-        winrate_mean = player_df['win'].mean()
-        wins = player_df['win'].apply(lambda x: x[x == True].count())
-        loses = player_df['win'].apply(lambda x: x[x == False].count())
-        pickrate = player_df.size()
+        team_gold_percentage_mean = p_df['percentageTeamGold'].mean()
+        team_dpm_percentage_mean = p_df['percentageTeamDpmChampions'].mean()
+        winrate_mean = p_df['win'].mean()
+        wins = p_df['win'].apply(lambda x: x[x == True].count())
+        loses = p_df['win'].apply(lambda x: x[x == False].count())
+        pickrate = p_df.size()
 
         # Extremos
-        max_kda = player_df['kda'].max()
-        min_kda = player_df['kda'].min()
-        max_kp = player_df['kp'].max()
-        min_kp = player_df['kp'].min()
-        max_fpm = player_df['fpm'].max()
-        min_fpm = player_df['fpm'].min()
-        max_dpm_champions = player_df['dpmChampions'].max()
-        max_dpm_turrets = player_df['dpmTurrets'].min()
-        min_dpm_champions = player_df['dpmChampions'].max()
-        min_dpm_turrets = player_df['dpmTurrets'].min()
-        max_vspm = player_df['vspm'].max()
-        min_vspm = player_df['vspm'].min()
-        max_percentage_gold = player_df['percentageTeamGold'].max()
-        min_percentage_gold = player_df['percentageTeamGold'].min()
-        max_percentage_dpm_champions = player_df['percentageTeamDpmChampions'].max()
-        min_percentage_dpm_champions = player_df['percentageTeamDpmChampions'].min()
-        max_gold_efficiency = player_df['goldEfficiency'].max()
-        min_gold_efficiency = player_df['goldEfficiency'].min()
+        max_kda = p_df['kda'].max()
+        min_kda = p_df['kda'].min()
+        max_kp = p_df['kp'].max()
+        min_kp = p_df['kp'].min()
+        max_fpm = p_df['fpm'].max()
+        min_fpm = p_df['fpm'].min()
+        max_dpm_champions = p_df['dpmChampions'].max()
+        max_dpm_turrets = p_df['dpmTurrets'].min()
+        min_dpm_champions = p_df['dpmChampions'].max()
+        min_dpm_turrets = p_df['dpmTurrets'].min()
+        max_vspm = p_df['vspm'].max()
+        min_vspm = p_df['vspm'].min()
+        max_percentage_gold = p_df['percentageTeamGold'].max()
+        min_percentage_gold = p_df['percentageTeamGold'].min()
+        max_percentage_dpm_champions = p_df['percentageTeamDpmChampions'].max()
+        min_percentage_dpm_champions = p_df['percentageTeamDpmChampions'].min()
+        max_gold_efficiency = p_df['goldEfficiency'].max()
+        min_gold_efficiency = p_df['goldEfficiency'].min()
 
         max_min_dict = {
             "max_kda": max_kda,
@@ -300,7 +300,7 @@ class AnalysePlayer:
         ax3.plot(indices,mean_df["vspm"], color='purple', marker='^', linestyle='--', label='Vision Score per Minute', linewidth=2)
         ax3.set_ylabel('Farm/Vision Score per Minute')
 
-        winrate_plot3 = basic_plot.twinx()
+        winrate_plot3 = winrate_plot.twinx()
         winrate_plot3.plot(indices,mean_df["winrate"], color='blue', marker='o', linestyle='-', label='Winrate', linewidth=2)
         winrate_plot3.set_ylabel('% Winrate')
 
@@ -319,26 +319,26 @@ class AnalysePlayer:
         ax2.set_ylabel('Gold Efficiency')
 
         fb_plot.set_yticks(indices)
-        fb_plot.set_yticklabels(mean_df.index, ha='right', va='top')
+        fb_plot.set_yticklabels(mean_df.index)
         fb_plot.set_ylabel('Campeões')
         fb_plot.set_xlabel('Quantidade')
         fb_plot.set_title('Participação em First Blood e First Tower por Campeão')
         fb_plot.legend(loc='upper right')
         
         dmg_gold_plot.set_xticks(indices)
-        dmg_gold_plot.set_xticklabels(mean_df.index, rotation=90, ha='right', va='top')
+        dmg_gold_plot.set_xticklabels(mean_df.index, rotation=90)
         dmg_gold_plot.set_xlabel('Campeões')
         dmg_gold_plot.set_ylabel('Quantidade')
         dmg_gold_plot.set_title('Relação de Dano e Gold por Campeão')
 
         winrate_plot.set_xticks(indices)
-        winrate_plot.set_xticklabels(mean_df.index, rotation=90, ha='right', va='top')
+        winrate_plot.set_xticklabels(mean_df.index, rotation=90)
         winrate_plot.set_xlabel('Campeões')
         winrate_plot.set_ylabel('Quantidade Jogos')
         winrate_plot.set_title('Winrate')
 
         basic_plot.set_xticks(indices)
-        basic_plot.set_xticklabels(mean_df.index, rotation=90, ha='right', va='top')
+        basic_plot.set_xticklabels(mean_df.index, rotation=90)
         basic_plot.set_xlabel('Campeões')
         basic_plot.set_ylabel('Quantidade')
         basic_plot.set_title('Relação de Dano e Gold por Campeão')
@@ -355,7 +355,7 @@ class AnalysePlayer:
         team_comparison_plot.plot(indices, mean_df["team_dpm_percentage"], color='orange', marker='o', linestyle='--', label='% De DPM', linewidth=2)
         team_comparison_plot.plot(indices, mean_df["kp"], color='red', marker='o', linestyle='-.', label='KP', linewidth=2)
         team_comparison_plot.set_xticks(indices)
-        team_comparison_plot.set_xticklabels(mean_df.index, rotation=90, ha='right', va='top') 
+        team_comparison_plot.set_xticklabels(mean_df.index, rotation=90) 
         team_comparison_plot.set_ylabel('Gold | DPM | KP')
         team_comparison_plot.legend(loc='upper right')
 
@@ -375,9 +375,16 @@ class AnalysePlayer:
         # Plotando a linha cumulativa no eixo secundário
         pickrate_plot2 = pickrate_plot.twinx()
         pickrate_plot2.plot(cumulative_percentage, color='red', marker='D', linestyle='-', label='Cumulativo (%)')
+
+        # Ajustando os rótulos do eixo X
         pickrate_plot2.set_ylabel('Porcentagem Cumulativa (%)')
-        pickrate_plot2.set_xticklabels(mean_df.index, rotation=45) 
+
+        # Garantir que o número de ticks e rótulos seja o mesmo e na ordem correta
+        pickrate_plot2.set_xticks(range(len(mean_df)))  # Alinha os ticks com o número de campeões
+        pickrate_plot2.set_xticklabels(sorted_pickrate.index, rotation=45)  # Define os rótulos dos campeões
+
         pickrate_plot2.legend(loc='upper right')
+
 
         plt.tight_layout()
         plt.show()
