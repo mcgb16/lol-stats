@@ -58,6 +58,10 @@ def organize_match_geral_data(match_dict):
         players_info_list[i]["dpmTurrets"] = (players_info_list[i]["damageDealtToTurrets"] / match_dict['info']['gameDuration']) * 60
         players_info_list[i]["dpmTotal"] = ((players_info_list[i]["physicalDamageDealt"] + players_info_list[i]["magicDamageDealt"]) / match_dict['info']['gameDuration']) * 60
         players_info_list[i]["fpm"] = ((players_info_list[i]["totalMinionsKilled"] + players_info_list[i]["totalAllyJungleMinionsKilled"] + players_info_list[i]["totalEnemyJungleMinionsKilled"]) / match_dict['info']['gameDuration']) * 60
+        players_info_list[i]["vspm"] = (players_info_list[i]["visionScore"] / match_dict['info']['gameDuration']) * 60
+        players_info_list[i]["gpm"] = (players_info_list[i]["goldEarned"] / match_dict['info']['gameDuration']) * 60
+
+        
         try:
             players_info_list[i]["kda"] = ((players_info_list[i]["kills"] + players_info_list[i]["assists"]) / players_info_list[i]["deaths"])
         except:

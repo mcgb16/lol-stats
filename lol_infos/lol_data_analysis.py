@@ -81,10 +81,9 @@ class AnalysePlayer:
         dpm_turret_mean = np.mean(player_df['dpmTurrets'])
         fpm_mean = np.mean(player_df['fpm'])
         kda_mean = np.mean(player_df['kda'])
-        gold_earned_mean = np.mean(player_df['goldEarned'])
-        gold_spent_mean = np.mean(player_df['goldSpent'])
+        gpm_mean = np.mean(player_df['gpm'])
         gold_efficiency_mean = np.mean(player_df['goldEfficiency'])
-        vision_score_mean = np.mean(player_df['visionScore'])
+        vspm_mean = np.mean(player_df['vspm'])
         fb_kill_mean = np.mean(player_df['firstBloodKill'])
         fb_assist_mean = np.mean(player_df['firstBloodAssist'])
         fb_participation_mean = fb_kill_mean + fb_assist_mean
@@ -105,8 +104,8 @@ class AnalysePlayer:
         max_dpm_turrets = np.max(player_df['dpmTurrets'])
         min_dpm_champions = np.min(player_df['dpmChampions'])
         min_dpm_turrets = np.min(player_df['dpmTurrets'])
-        max_vision_score = np.max(player_df['visionScore'])
-        min_vision_score = np.min(player_df['visionScore'])
+        max_vspm = np.max(player_df['vspm'])
+        min_vspm = np.min(player_df['vspm'])
         max_percentage_gold = np.max(player_df['percentageTeamGold'])
         min_percentage_gold = np.min(player_df['percentageTeamGold'])
         max_percentage_dpm_champions = np.max(player_df['percentageTeamDpmChampions'])
@@ -125,8 +124,8 @@ class AnalysePlayer:
             "min_dpm_champions": min_dpm_champions,
             "max_dpm_turrets": max_dpm_turrets,
             "min_dpm_turrets": min_dpm_turrets,
-            "max_vision_score": max_vision_score,
-            "min_vision_score": min_vision_score,
+            "max_vspm": max_vspm,
+            "min_vspm": min_vspm,
             "max_percentage_gold": max_percentage_gold,
             "min_percentage_gold": min_percentage_gold,
             "max_percentage_dpm_champions": max_percentage_dpm_champions,
@@ -141,10 +140,9 @@ class AnalysePlayer:
             "dpm_turret": dpm_turret_mean,
             "fpm": fpm_mean,
             "kda": kda_mean,
-            "gold_earned": gold_earned_mean,
-            "gold_spent": gold_spent_mean,
+            "gpm": gpm_mean,
             "gold_efficiency": gold_efficiency_mean,
-            "vision_score": vision_score_mean,
+            "vspm": vspm_mean,
             "fb_kill": fb_kill_mean,
             "fb_assist": fb_assist_mean,
             "fb_participation": fb_participation_mean,
@@ -167,10 +165,9 @@ class AnalysePlayer:
         dpm_turret_mean = player_df['dpmTurrets'].mean()
         fpm_mean = player_df['fpm'].mean()
         kda_mean = player_df['kda'].mean()
-        gold_earned_mean = player_df['goldEarned'].mean()
-        gold_spent_mean = player_df['goldSpent'].mean()
+        gpm_mean = player_df['gpm'].mean()
         gold_efficiency_mean = player_df['goldEfficiency'].mean()
-        vision_score_mean = player_df['visionScore'].mean()
+        vspm_mean = player_df['vspm'].mean()
         fb_kill_mean = player_df['firstBloodKill'].mean()
         fb_assist_mean = player_df['firstBloodAssist'].mean()
         fb_participation_mean = fb_kill_mean + fb_assist_mean
@@ -191,8 +188,8 @@ class AnalysePlayer:
         max_dpm_turrets = player_df['dpmTurrets'].min()
         min_dpm_champions = player_df['dpmChampions'].max()
         min_dpm_turrets = player_df['dpmTurrets'].min()
-        max_vision_score = player_df['visionScore'].max()
-        min_vision_score = player_df['visionScore'].min()
+        max_vspm = player_df['vspm'].max()
+        min_vspm = player_df['vspm'].min()
         max_percentage_gold = player_df['percentageTeamGold'].max()
         min_percentage_gold = player_df['percentageTeamGold'].min()
         max_percentage_dpm_champions = player_df['percentageTeamDpmChampions'].max()
@@ -211,8 +208,8 @@ class AnalysePlayer:
             "min_dpm_champions": min_dpm_champions,
             "max_dpm_turrets": max_dpm_turrets,
             "min_dpm_turrets": min_dpm_turrets,
-            "max_vision_score": max_vision_score,
-            "min_vision_score": min_vision_score,
+            "max_vspm": max_vspm,
+            "min_vspm": min_vspm,
             "max_percentage_gold": max_percentage_gold,
             "min_percentage_gold": min_percentage_gold,
             "max_percentage_dpm_champions": max_percentage_dpm_champions,
@@ -227,10 +224,9 @@ class AnalysePlayer:
             "dpm_turret": dpm_turret_mean,
             "fpm": fpm_mean,
             "kda": kda_mean,
-            "gold_earned": gold_earned_mean,
-            "gold_spent": gold_spent_mean,
+            "gpm": gpm_mean,
             "gold_efficiency": gold_efficiency_mean,
-            "vision_score": vision_score_mean,
+            "vspm": vspm_mean,
             "fb_kill": fb_kill_mean,
             "fb_assist": fb_assist_mean,
             "fb_participation": fb_participation_mean,
@@ -277,7 +273,7 @@ class AnalysePlayer:
 
         ax3 = basic_plot.twinx()
         ax3.plot(indices,mean_df["fpm"], color='red', marker='o', linestyle='-', label='Farm per Minute', linewidth=2)
-        ax3.plot(indices,mean_df["vision_score"], color='purple', marker='^', linestyle='--', label='Vision Score per Minute', linewidth=2)
+        ax3.plot(indices,mean_df["vspm"], color='purple', marker='^', linestyle='--', label='Vision Score per Minute', linewidth=2)
         ax3.set_ylabel('Farm/Vision Score per Minute')
 
         lines, labels = basic_plot.get_legend_handles_labels()
@@ -288,8 +284,7 @@ class AnalysePlayer:
 
         ax3.legend(lines, labels, loc='upper right')
 
-        dmg_gold_plot.plot(indices, mean_df["gold_earned"], color='green', marker='o', linestyle='-', label='Gold Earned', linewidth=2)
-        dmg_gold_plot.plot(indices, mean_df["gold_spent"], color='orange', marker='o', linestyle='--', label='Gold Spent', linewidth=2)
+        dmg_gold_plot.plot(indices, mean_df["gpm"], color='green', marker='o', linestyle='-', label='Gold Earned', linewidth=2)
 
         ax2 = dmg_gold_plot.twinx()
         ax2.plot(indices, mean_df["gold_efficiency"], color='red', marker='*', linestyle='', label='Gold Efficiency', linewidth=2)
