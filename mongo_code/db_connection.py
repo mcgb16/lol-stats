@@ -59,16 +59,19 @@ def find_summoner_spells(id_spell):
     response = spells_collection.find_one(sort=get_last_doc)
 
     spells_dict = response['data']
+    try:
 
-    for i in spells_dict.items():
-        for k in i:
-            if type(k) == dict:
-                id_spell = str(id_spell)
-                if k['key'] == id_spell:
-                    get_spell = k['name']
-                    break
+        for i in spells_dict.items():
+            for k in i:
+                if type(k) == dict:
+                    id_spell = str(id_spell)
+                    if k['key'] == id_spell:
+                        get_spell = k['name']
+                        break
     
-    return get_spell
+        return get_spell
+    except:
+        return "No summoner spell find."
 
 def find_champion_by_id(id_champion):
     get_last_doc = [("_id", -1)]
