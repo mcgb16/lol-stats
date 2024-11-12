@@ -12,4 +12,6 @@ if __name__ == "__main__":
 
     player_analysis = lda.AnalysePlayer(lol_acc_puuid)
 
-    player_analysis.create_player_analysis()
+    dfs_dict = player_analysis.create_player_analysis()
+
+    player_analysis.create_mean_plots(dfs_dict["champion_mean"])
