@@ -261,89 +261,42 @@ class AnalysePlayer:
 
         return mean_df, max_min_df
 
-    def __create_mean_plots(self, mean_df):
-        # plots: fb/ft ; %g/%d/%kp ; dpmc/dpmt/gpm/geff ; vspm/kda/fpm ; picks ; wr
-        fig, axes = plt.subplots(2, 3, figsize=(10, 6))
+    def __first_blood_tower_plot(self, plot, df, indices, bar_width):
+        for i, champion in enumerate(df.index):
+            plot.barh(indices[i] - bar_width / 2, df.loc[champion, "fb_kill"], height=bar_width, label='First Blood Kill' if i == 0 else "", color='skyblue')
 
-        fb_plot = axes[0,0]
-        team_comparison_plot = axes[0,1]
-        winrate_plot = axes[0,2]
-        dmg_gold_plot = axes[1,0]
-        basic_plot = axes[1,1]
-        pickrate_plot = axes[1,2]
+            plot.barh(indices[i] - bar_width / 2, df.loc[champion, "fb_assist"], height=bar_width, left=df.loc[champion, "fb_kill"], label='First Blood Assist' if i == 0 else "", color='dodgerblue')
 
-        bar_width = 0.35
-        indices = range(len(mean_df))
+            plot.barh(indices[i] + bar_width / 2, df.loc[champion, "ft_kill"], height=bar_width, label='First Tower Kill' if i == 0 else "", color='lightgreen')
 
-        for i, champion in enumerate(mean_df.index):
-            fb_plot.barh(indices[i] - bar_width / 2, mean_df.loc[champion, "fb_kill"], height=bar_width, label='FB Kill' if i == 0 else "", color='skyblue')
+            plot.barh(indices[i] + bar_width / 2, df.loc[champion, "ft_assist"], height=bar_width, left=df.loc[champion, "ft_kill"], label='First Tower Assist' if i == 0 else "", color='green')
+
+        plot.set_yticks(indices)
+        plot.set_yticklabels(df.index)
+        plot.set_ylabel('Campeões')
+        plot.set_xlabel('Quantidade')
+        plot.set_title('Participação em First Blood e First Tower por Campeão')
+        plot.legend(loc='upper right')
+
+        return plot
     
-            # Barra para FB Assist (empilhada após FB Kill)
-            fb_plot.barh(indices[i] - bar_width / 2, mean_df.loc[champion, "fb_assist"], height=bar_width, left=mean_df.loc[champion, "fb_kill"], label='FB Assist' if i == 0 else "", color='dodgerblue')
+    def __percentage_dpm_gold_plot(self, plot, df, indices, bar_width):
+        for i, champion in enumerate(df.index):
+            plot.bar(indices[i] - bar_width / 2, df.loc[champion, "dpm_champion"], width=bar_width, label='DPM Champion' if i == 0 else "", color='skyblue')
+            plot.bar(indices[i] + bar_width / 2, df.loc[champion, "dpm_turret"], width=bar_width, label='DPM Turret' if i == 0 else "", color='dodgerblue')
+        plot.plot(indices, df["gpm"], color='green', marker='o', linestyle='-', label='Gold Earned', linewidth=2)
 
-            # Barra para FT Kill (em um nível diferente de FB)
-            fb_plot.barh(indices[i] + bar_width / 2, mean_df.loc[champion, "ft_kill"], height=bar_width, label='FT Kill' if i == 0 else "", color='lightgreen')
-            
-            # Barra para FT Assist (empilhada após FT Kill)
-            fb_plot.barh(indices[i] + bar_width / 2, mean_df.loc[champion, "ft_assist"], height=bar_width, left=mean_df.loc[champion, "ft_kill"], label='FT Assist' if i == 0 else "", color='green')
-
-            dmg_gold_plot.bar(indices[i] - bar_width / 2, mean_df.loc[champion, "dpm_champion"], width=bar_width, label='DPM Champion' if i == 0 else "", color='skyblue')
-            dmg_gold_plot.bar(indices[i] + bar_width / 2, mean_df.loc[champion, "dpm_turret"], width=bar_width, label='DPM Turret' if i == 0 else "", color='dodgerblue')
-
-            winrate_plot.bar(indices[i] - bar_width / 2, mean_df.loc[champion, "wins"], width=bar_width, label='Wins' if i == 0 else "", color='green')
-            winrate_plot.bar(indices[i] + bar_width / 2, mean_df.loc[champion, "loses"], width=bar_width, label='Loses' if i == 0 else "", color='red')
-
-            basic_plot.bar(indices[i] + bar_width / 2, mean_df.loc[champion, "kda"], width=bar_width, label='KDA' if i == 0 else "", color='dodgerblue')
-
-        ax3 = basic_plot.twinx()
-        ax3.plot(indices,mean_df["fpm"], color='red', marker='o', linestyle='-', label='Farm per Minute', linewidth=2)
-        ax3.plot(indices,mean_df["vspm"], color='purple', marker='^', linestyle='--', label='Vision Score per Minute', linewidth=2)
-        ax3.set_ylabel('Farm/Vision Score per Minute')
-
-        winrate_plot3 = winrate_plot.twinx()
-        winrate_plot3.plot(indices,mean_df["winrate"], color='blue', marker='o', linestyle='-', label='Winrate', linewidth=2)
-        winrate_plot3.set_ylabel('% Winrate')
-
-        lines, labels = basic_plot.get_legend_handles_labels()
-        lines2, labels2 = ax3.get_legend_handles_labels()
-        
-        lines.extend(lines2)
-        labels.extend(labels2)
-
-        ax3.legend(lines, labels, loc='upper right')
-
-        dmg_gold_plot.plot(indices, mean_df["gpm"], color='green', marker='o', linestyle='-', label='Gold Earned', linewidth=2)
-
-        ax2 = dmg_gold_plot.twinx()
-        ax2.plot(indices, mean_df["gold_efficiency"], color='red', marker='*', linestyle='', label='Gold Efficiency', linewidth=2)
+        ax2 = plot.twinx()
+        ax2.plot(indices, df["gold_efficiency"], color='red', marker='*', linestyle='', label='Gold Efficiency', linewidth=2)
         ax2.set_ylabel('Gold Efficiency')
-
-        fb_plot.set_yticks(indices)
-        fb_plot.set_yticklabels(mean_df.index)
-        fb_plot.set_ylabel('Campeões')
-        fb_plot.set_xlabel('Quantidade')
-        fb_plot.set_title('Participação em First Blood e First Tower por Campeão')
-        fb_plot.legend(loc='upper right')
         
-        dmg_gold_plot.set_xticks(indices)
-        dmg_gold_plot.set_xticklabels(mean_df.index, rotation=90)
-        dmg_gold_plot.set_xlabel('Campeões')
-        dmg_gold_plot.set_ylabel('Quantidade')
-        dmg_gold_plot.set_title('Relação de Dano e Gold por Campeão')
+        plot.set_xticks(indices)
+        plot.set_xticklabels(df.index, rotation=90)
+        plot.set_xlabel('Campeões')
+        plot.set_ylabel('Quantidade')
+        plot.set_title('Relação de Dano e Gold por Campeão')
 
-        winrate_plot.set_xticks(indices)
-        winrate_plot.set_xticklabels(mean_df.index, rotation=90)
-        winrate_plot.set_xlabel('Campeões')
-        winrate_plot.set_ylabel('Quantidade Jogos')
-        winrate_plot.set_title('Winrate')
-
-        basic_plot.set_xticks(indices)
-        basic_plot.set_xticklabels(mean_df.index, rotation=90)
-        basic_plot.set_xlabel('Campeões')
-        basic_plot.set_ylabel('Quantidade')
-        basic_plot.set_title('Relação de Dano e Gold por Campeão')
-        
-        lines, labels = dmg_gold_plot.get_legend_handles_labels()
+        lines, labels = plot.get_legend_handles_labels()
         lines2, labels2 = ax2.get_legend_handles_labels()
         
         lines.extend(lines2)
@@ -351,40 +304,100 @@ class AnalysePlayer:
 
         ax2.legend(lines, labels, loc='upper right')
 
-        team_comparison_plot.plot(indices, mean_df["team_gold_percentage"], color='green', marker='o', linestyle='-', label='% De Gold', linewidth=2)
-        team_comparison_plot.plot(indices, mean_df["team_dpm_percentage"], color='orange', marker='o', linestyle='--', label='% De DPM', linewidth=2)
-        team_comparison_plot.plot(indices, mean_df["kp"], color='red', marker='o', linestyle='-.', label='KP', linewidth=2)
-        team_comparison_plot.set_xticks(indices)
-        team_comparison_plot.set_xticklabels(mean_df.index, rotation=90) 
-        team_comparison_plot.set_ylabel('Gold | DPM | KP')
-        team_comparison_plot.legend(loc='upper right')
+    def __winrate_plot(self, plot, df, indices, bar_width):
+        for i, champion in enumerate(df.index):
+            plot.bar(indices[i] - bar_width / 2, df.loc[champion, "wins"], width=bar_width, label='Wins' if i == 0 else "", color='green')
+            plot.bar(indices[i] + bar_width / 2, df.loc[champion, "loses"], width=bar_width, label='Loses' if i == 0 else "", color='red')
+        plot3 = plot.twinx()
+        plot3.plot(indices,df["winrate"], color='blue', marker='o', linestyle='-', label='Winrate', linewidth=2)
+        plot3.set_ylabel('% Winrate')
 
+        plot.set_xticks(indices)
+        plot.set_xticklabels(df.index, rotation=90)
+        plot.set_xlabel('Campeões')
+        plot.set_ylabel('Quantidade Jogos')
+        plot.set_title('Winrate')
+
+    def __basic_plot(self, plot, df, indices, bar_width):
+        for i, champion in enumerate(df.index):
+            plot.bar(indices[i] + bar_width / 2, df.loc[champion, "kda"], width=bar_width, label='KDA' if i == 0 else "", color='dodgerblue')
+
+        plot3 = plot.twinx()
+        plot3.plot(indices,df["fpm"], color='red', marker='o', linestyle='-', label='Farm per Minute', linewidth=2)
+        plot3.plot(indices,df["vspm"], color='purple', marker='^', linestyle='--', label='Vision Score per Minute', linewidth=2)
+        plot3.set_ylabel('Farm/Vision Score per Minute')
+
+        
+
+        lines, labels = plot.get_legend_handles_labels()
+        lines2, labels2 = plot3.get_legend_handles_labels()
+        
+        lines.extend(lines2)
+        labels.extend(labels2)
+
+        plot3.legend(lines, labels, loc='upper right')
+
+        
+
+        plot.set_xticks(indices)
+        plot.set_xticklabels(df.index, rotation=90)
+        plot.set_xlabel('Campeões')
+        plot.set_ylabel('Quantidade')
+        plot.set_title('Relação de Dano e Gold por Campeão')
+
+    def __team_comparison_plot(self, plot, df, indices, bar_width):
+        plot.plot(indices, df["team_gold_percentage"], color='green', marker='o', linestyle='-', label='% De Gold', linewidth=2)
+        plot.plot(indices, df["team_dpm_percentage"], color='orange', marker='o', linestyle='--', label='% De DPM', linewidth=2)
+        plot.plot(indices, df["kp"], color='red', marker='o', linestyle='-.', label='KP', linewidth=2)
+        plot.set_xticks(indices)
+        plot.set_xticklabels(df.index, rotation=90) 
+        plot.set_ylabel('Gold | DPM | KP')
+        plot.legend(loc='upper right')
+
+    def __pickrate_plot(self, plot, df, indices, bar_width):
         # Ordenando por winrate para o Pareto
-        sorted_pickrate = mean_df['pickrate'].sort_values(ascending=False)
+        sorted_pickrate = df['pickrate'].sort_values(ascending=False)
 
         # Plotando as barras de winrate
-        sorted_pickrate.plot(kind='bar', color='skyblue', ax=pickrate_plot)
-        pickrate_plot.set_ylabel('Winrate (%)')
-        pickrate_plot.set_xlabel('Campeões')
-        pickrate_plot.set_title('Pareto de Winrate por Campeão')
+        sorted_pickrate.plot(kind='bar', color='skyblue', ax=plot)
+        plot.set_ylabel('Winrate (%)')
+        plot.set_xlabel('Campeões')
+        plot.set_title('Pareto de Winrate por Campeão')
 
         # Calculando a linha de porcentagem acumulada
         cumulative_sum = sorted_pickrate.cumsum()
         cumulative_percentage = cumulative_sum / cumulative_sum.iloc[-1] * 100
 
         # Plotando a linha cumulativa no eixo secundário
-        pickrate_plot2 = pickrate_plot.twinx()
-        pickrate_plot2.plot(cumulative_percentage, color='red', marker='D', linestyle='-', label='Cumulativo (%)')
+        plot2 = plot.twinx()
+        plot2.plot(cumulative_percentage, color='red', marker='D', linestyle='-', label='Cumulativo (%)')
 
         # Ajustando os rótulos do eixo X
-        pickrate_plot2.set_ylabel('Porcentagem Cumulativa (%)')
+        plot2.set_ylabel('Porcentagem Cumulativa (%)')
 
         # Garantir que o número de ticks e rótulos seja o mesmo e na ordem correta
-        pickrate_plot2.set_xticks(range(len(mean_df)))  # Alinha os ticks com o número de campeões
-        pickrate_plot2.set_xticklabels(sorted_pickrate.index, rotation=45)  # Define os rótulos dos campeões
+        plot2.set_xticks(range(len(df)))  # Alinha os ticks com o número de campeões
+        plot2.set_xticklabels(sorted_pickrate.index, rotation=45)  # Define os rótulos dos campeões
 
-        pickrate_plot2.legend(loc='upper right')
+        plot2.legend(loc='upper right')
 
+    def create_mean_plots(self, mean_df):
+        fig, axes = plt.subplots(2, 3, figsize=(10, 6))
+
+        bar_width = 0.35
+        indices = range(len(mean_df))
+
+        fb_plot = self.__first_blood_tower_plot(axes[0,0], mean_df, indices, bar_width)
+        
+        team_comparison_plot = self.__team_comparison_plot(axes[0,1], mean_df, indices, bar_width)
+        
+        winrate_plot = self.__winrate_plot(axes[0,2], mean_df, indices, bar_width)
+        
+        percentage_dpm_gold_plot = self.__percentage_dpm_gold_plot(axes[1,0], mean_df, indices, bar_width)
+        
+        basic_plot = self.__basic_plot(axes[1,1], mean_df, indices, bar_width)
+        
+        pickrate_plot = self.__pickrate_plot(axes[1,2], mean_df, indices, bar_width)
 
         plt.tight_layout()
         plt.show()
@@ -408,6 +421,13 @@ class AnalysePlayer:
         champion_mean_df, champion_max_min_df = self.__grouped_numerical_analysis(champions_current_player_df)
         role_mean_df, role_max_min_df = self.__grouped_numerical_analysis(role_current_player_df)
 
-        champion_mean_plots = self.__create_mean_plots(champion_mean_df)
+        dfs_dict = {
+            "no_filter_mean" : no_filter_mean_df,
+            "no_filter_max_min" : no_filter_max_min_df,
+            "champion_mean" : champion_mean_df,
+            "champion_max_min" : champion_max_min_df,
+            "role_mean" : role_mean_df,
+            "role_max_min" : role_max_min_df
+        }
 
-        return
+        return dfs_dict
