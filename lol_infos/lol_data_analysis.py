@@ -275,6 +275,7 @@ class AnalysePlayer:
 
         x_ticks = np.linspace(ticks_info["min_value"], max_value, ticks_info["num_ticks"])
 
+        plot.set_xlim(ticks_info["min_value"], max_value*1.05)
         plot.set_xticks(x_ticks)
         plot.set_xticklabels([f"{tick:.1f}" for tick in x_ticks])
         plot.set_yticks(indices)
@@ -293,6 +294,13 @@ class AnalysePlayer:
         
         plot.plot(indices, df["gpm"], color='green', marker='o', linestyle='-', label='Gold Adquirido por Minuto', linewidth=2)
 
+        max_value = np.ceil(df[["dpm_champion", "gpm", "dpm_turret"]].max().max())
+
+        y_ticks = np.ceil(np.linspace(ticks_info["min_value"], max_value, ticks_info["num_ticks"]))
+
+        plot.set_ylim(ticks_info["min_value"], max_value*1.05)
+        plot.set_yticks(y_ticks)
+        plot.set_yticklabels([f"{tick:.0f}" for tick in y_ticks])
         plot.set_xticks(indices)
         plot.set_xticklabels(df.index, rotation=90)
         plot.set_xlabel('Campeões')
@@ -302,6 +310,13 @@ class AnalysePlayer:
         plot2 = plot.twinx()
         plot2.plot(indices, df["gold_efficiency"], color='red', marker='*', linestyle='', label='Eficiência de Gold', linewidth=2)
 
+        max_value2 = df[["gold_efficiency"]].max().max()
+
+        y_ticks2 = np.linspace(ticks_info["min_value"], max_value2, ticks_info["num_ticks"])
+
+        plot2.set_ylim(ticks_info["min_value"], max_value2*1.05)
+        plot2.set_yticks(y_ticks2)
+        plot2.set_yticklabels([f"{tick:.1f}" for tick in y_ticks2])
         plot2.set_ylabel('Eficiência de Gold (DPM/GPM)')
 
         lines, labels = plot.get_legend_handles_labels()
@@ -319,6 +334,13 @@ class AnalysePlayer:
             plot.bar(indices[i] - bar_width / 2, df.loc[champion, "wins"], width=bar_width, label='Vitórias' if i == 0 else "", color='green')
             plot.bar(indices[i] + bar_width / 2, df.loc[champion, "loses"], width=bar_width, label='Derrotas' if i == 0 else "", color='red')
         
+        max_value = np.ceil(df[["wins", "loses"]].max().max())
+
+        y_ticks = np.linspace(ticks_info["min_value"], max_value, ticks_info["num_ticks"])
+
+        plot.set_ylim(ticks_info["min_value"], max_value*1.05)
+        plot.set_yticks(y_ticks)
+        plot.set_yticklabels([f"{tick:.0f}" for tick in y_ticks])
         plot.set_xticks(indices)
         plot.set_xticklabels(df.index, rotation=90)
         plot.set_xlabel('Campeões')
@@ -328,6 +350,13 @@ class AnalysePlayer:
         plot2 = plot.twinx()
         plot2.plot(indices,df["winrate"], color='blue', marker='o', linestyle='-', label='Winrate', linewidth=2)
 
+        max_value2 = df[["winrate"]].max().max()
+
+        y_ticks2 = np.linspace(ticks_info["min_value"], max_value2, ticks_info["num_ticks"])
+
+        plot2.set_ylim(ticks_info["min_value"], max_value2*1.05)
+        plot2.set_yticks(y_ticks2)
+        plot2.set_yticklabels([f"{tick:.1f}" for tick in y_ticks2])
         plot2.set_ylabel('% Winrate')
 
         lines, labels = plot.get_legend_handles_labels()
@@ -343,28 +372,25 @@ class AnalysePlayer:
     def __basic_plot(self, plot, df, indices, bar_width, ticks_info):
         for i, champion in enumerate(df.index):
             plot.bar(indices[i] + bar_width / 2, df.loc[champion, "kda"], width=bar_width, label='KDA' if i == 0 else "", color='dodgerblue')
+        plot.plot(indices,df["fpm"], color='red', marker='o', linestyle='-', label='Farm por Minuto', linewidth=2)
+        plot.plot(indices,df["vspm"], color='purple', marker='^', linestyle='--', label='Placar de Visão por Minuto', linewidth=2)
 
+        max_value = np.ceil(df[["kda", "fpm", "vspm"]].max().max())
+
+        y_ticks = np.linspace(ticks_info["min_value"], max_value, ticks_info["num_ticks"])
+
+        plot.set_ylim(ticks_info["min_value"], max_value*1.05)
+        plot.set_yticks(y_ticks)
+        plot.set_yticklabels([f"{tick:.1f}" for tick in y_ticks])
         plot.set_xticks(indices)
         plot.set_xticklabels(df.index, rotation=90)
         plot.set_xlabel('Campeões')
-        plot.set_ylabel('Valor do KDA')
+        plot.set_ylabel('Valor')
         plot.set_title('Farm/Placar de Visão por Minuto e KDA por Campeão')
 
-        plot2 = plot.twinx()
-        plot2.plot(indices,df["fpm"], color='red', marker='o', linestyle='-', label='Farm por Minuto', linewidth=2)
-        plot2.plot(indices,df["vspm"], color='purple', marker='^', linestyle='--', label='Placar de Visão por Minuto', linewidth=2)
-        
-        plot2.set_ylabel('Valor por Minuto')
+        plot.legend(loc='upper right', framealpha=0.2, fontsize=7)
 
-        lines, labels = plot.get_legend_handles_labels()
-        lines2, labels2 = plot2.get_legend_handles_labels()
-        
-        lines.extend(lines2)
-        labels.extend(labels2)
-
-        plot2.legend(lines, labels, loc='upper right', framealpha=0.2, fontsize=7)
-
-        return plot2
+        return plot
 
     def __team_comparison_plot(self, plot, df, indices, bar_width, ticks_info):
         plot.plot(indices, df["team_gold_percentage"], color='green', marker='o', linestyle='-', label='% De Gold', linewidth=2)
@@ -374,7 +400,8 @@ class AnalysePlayer:
         max_value = df[["team_gold_percentage","team_dpm_percentage","kp"]].max().max()
 
         y_ticks = np.linspace(ticks_info["min_value"], max_value, ticks_info["num_ticks"])
-
+        
+        plot.set_ylim(ticks_info["min_value"], max_value*1.05)
         plot.set_yticks(y_ticks)
         plot.set_yticklabels([f"{tick:.1f}" for tick in y_ticks])
         plot.set_xticks(indices)
@@ -394,6 +421,13 @@ class AnalysePlayer:
         cumulative_sum = sorted_pickrate.cumsum()
         cumulative_percentage = cumulative_sum / cumulative_sum.iloc[-1] * 100
 
+        max_value = np.ceil(df[["pickrate"]].max().max())
+
+        y_ticks = np.linspace(ticks_info["min_value"], max_value, ticks_info["num_ticks"])
+
+        plot.set_ylim(ticks_info["min_value"], max_value*1.05)
+        plot.set_yticks(y_ticks)
+        plot.set_yticklabels([f"{tick:.0f}" for tick in y_ticks])
         plot.set_xticks(indices)
         plot.set_xticklabels(sorted_pickrate.index, rotation=90)
         plot.set_ylabel('Quantidade de Jogos')
@@ -403,6 +437,13 @@ class AnalysePlayer:
         plot2 = plot.twinx()
         plot2.plot(cumulative_percentage, color='red', marker='D', linestyle='-', label='Porcentagem Cumulativa (%)')
         
+        max_value2 = cumulative_percentage.max().max()
+
+        y_ticks2 = np.linspace(ticks_info["min_value"], max_value2, ticks_info["num_ticks"])
+
+        plot2.set_ylim(ticks_info["min_value"], max_value2*1.05)
+        plot2.set_yticks(y_ticks2)
+        plot2.set_yticklabels([f"{tick:.0f}" for tick in y_ticks2])
         plot2.set_ylabel('Porcentagem Cumulativa (%)')
         
         lines,labels = plot.get_legend_handles_labels()
@@ -419,7 +460,7 @@ class AnalysePlayer:
         fig, axes = plt.subplots(2, 3, figsize=(10, 6))
 
         mean_df_sorted = mean_df.sort_values(by='pickrate', ascending=False)
-        mean_df_top_10 = mean_df_sorted.head(15)
+        mean_df_top_10 = mean_df_sorted.head(10)
 
         bar_width = 0.35
         indices = range(len(mean_df_top_10))
