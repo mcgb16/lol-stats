@@ -500,7 +500,8 @@ class AnalysePlayer:
             "pickrate": "Pickrate",
             "wins": "Wins",
             "loses": "Loses",
-            "championName": "Champion"
+            "championName": "Champion",
+            "teamPosition": "Role"
         }
         
         new_table_columns = []
@@ -511,7 +512,7 @@ class AnalysePlayer:
         
         return new_table_columns
 
-    def create_champion_mean_table_plot(self, mean_df):
+    def create_grouped_mean_table_plot(self, mean_df):
         fig, ax = plt.subplots(figsize=(10,6))
 
         ax.axis("off")
@@ -520,7 +521,6 @@ class AnalysePlayer:
         mean_df_top_10 = mean_df_sorted.head(10)
 
         table_data = mean_df_top_10.reset_index()
-        col_widths = [0.05] * len(table_data.columns)
 
         table_data.columns = self.__adjust_col_labels(table_data.columns)
 
