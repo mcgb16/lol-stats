@@ -84,15 +84,15 @@ class AnalysePlayer:
         gpm_mean = np.mean(p_df['gpm'])
         gold_efficiency_mean = np.mean(p_df['goldEfficiency'])
         vspm_mean = np.mean(p_df['vspm'])
-        fb_kill_mean = np.mean(p_df['firstBloodKill'])
-        fb_assist_mean = np.mean(p_df['firstBloodAssist'])
+        fb_kill_mean = np.mean(p_df['firstBloodKill']) * 100
+        fb_assist_mean = np.mean(p_df['firstBloodAssist']) * 100
         fb_participation_mean = fb_kill_mean + fb_assist_mean
-        ft_kill_mean = np.mean(p_df['firstTowerKill'])
-        ft_assist_mean = np.mean(p_df['firstTowerAssist'])
+        ft_kill_mean = np.mean(p_df['firstTowerKill']) * 100
+        ft_assist_mean = np.mean(p_df['firstTowerAssist']) * 100
         ft_participation_mean = ft_kill_mean + ft_assist_mean
         team_gold_percentage_mean = np.mean(p_df['percentageTeamGold'])
         team_dpm_percentage_mean = np.mean(p_df['percentageTeamDpmChampions'])
-        winrate_mean = np.mean(p_df["win"])
+        winrate_mean = np.mean(p_df["win"]) * 100
         wins = np.sum(p_df["win"])
         loses = np.sum(p_df["win"] == False)
 
@@ -176,15 +176,15 @@ class AnalysePlayer:
         gpm_mean = p_df['gpm'].mean()
         gold_efficiency_mean = p_df['goldEfficiency'].mean()
         vspm_mean = p_df['vspm'].mean()
-        fb_kill_mean = p_df['firstBloodKill'].mean()
-        fb_assist_mean = p_df['firstBloodAssist'].mean()
+        fb_kill_mean = p_df['firstBloodKill'].mean() * 100
+        fb_assist_mean = p_df['firstBloodAssist'].mean() * 100
         fb_participation_mean = fb_kill_mean + fb_assist_mean
-        ft_kill_mean = p_df['firstTowerKill'].mean()
-        ft_assist_mean = p_df['firstTowerAssist'].mean()
+        ft_kill_mean = p_df['firstTowerKill'].mean() * 100
+        ft_assist_mean = p_df['firstTowerAssist'].mean() * 100
         ft_participation_mean = ft_kill_mean + ft_assist_mean
         team_gold_percentage_mean = p_df['percentageTeamGold'].mean()
         team_dpm_percentage_mean = p_df['percentageTeamDpmChampions'].mean()
-        winrate_mean = p_df['win'].mean()
+        winrate_mean = p_df['win'].mean() * 100
         wins = p_df['win'].apply(lambda x: x[x == True].count())
         loses = p_df['win'].apply(lambda x: x[x == False].count())
         pickrate = p_df.size()
@@ -277,7 +277,7 @@ class AnalysePlayer:
 
         plot.set_xlim(ticks_info["min_value"], max_value*1.05)
         plot.set_xticks(x_ticks)
-        plot.set_xticklabels([f"{tick:.1f}" for tick in x_ticks])
+        plot.set_xticklabels([f"{tick:.0f}" for tick in x_ticks])
         plot.set_yticks(indices)
         plot.set_yticklabels(df.index)
         plot.set_ylabel('Campeões')
@@ -356,7 +356,7 @@ class AnalysePlayer:
 
         plot2.set_ylim(ticks_info["min_value"], max_value2*1.05)
         plot2.set_yticks(y_ticks2)
-        plot2.set_yticklabels([f"{tick:.1f}" for tick in y_ticks2])
+        plot2.set_yticklabels([f"{tick:.0f}" for tick in y_ticks2])
         plot2.set_ylabel('% Winrate')
 
         lines, labels = plot.get_legend_handles_labels()
@@ -403,7 +403,7 @@ class AnalysePlayer:
         
         plot.set_ylim(ticks_info["min_value"], max_value*1.05)
         plot.set_yticks(y_ticks)
-        plot.set_yticklabels([f"{tick:.1f}" for tick in y_ticks])
+        plot.set_yticklabels([f"{tick:.0f}" for tick in y_ticks])
         plot.set_xticks(indices)
         plot.set_xticklabels(df.index, rotation=90) 
         plot.set_ylabel('Valor em %')
@@ -456,7 +456,7 @@ class AnalysePlayer:
 
         return plot2
 
-    def create_mean_plots(self, mean_df):
+    def create_mean_grouped_plots(self, mean_df):
         fig, axes = plt.subplots(2, 3, figsize=(10, 6))
 
         mean_df_sorted = mean_df.sort_values(by='pickrate', ascending=False)
