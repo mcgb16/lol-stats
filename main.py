@@ -14,4 +14,7 @@ if __name__ == "__main__":
 
     dfs_dict = player_analysis.create_player_analysis()
 
-    player_analysis.create_mean_plots(dfs_dict["champion_mean"])
+    # player_analysis.create_mean_grouped_plots(dfs_dict["champion_mean"])
+    # player_analysis.create_mean_grouped_plots(dfs_dict["role_mean"])
+    player_analysis.create_grouped_mean_table_plot(dfs_dict["champion_mean"])
+    player_analysis.create_grouped_mean_table_plot(dfs_dict["role_mean"])
