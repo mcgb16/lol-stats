@@ -535,12 +535,23 @@ class AnalysePlayer:
         table.set_fontsize(10)
 
         cmap = plt.cm.RdYlGn
-        for j in range(1, len(table_data.columns)): 
-            norm = mcolors.Normalize(vmin=table_data.iloc[:, j].min(), vmax=table_data.iloc[:, j].max())
-            for i in range(1, len(table_data.index) + 1):
-                value = table_data.iloc[i - 1, j]
-                color = cmap(norm(value))
-                table[i, j].set_facecolor(color)
+        for j, col_name in enumerate(table_data.columns):
+            if j == 0:
+                continue
+            
+            if col_name == "Wins" or col_name == "Loses":
+                winrate_index = table_data.columns.get_loc('Winrate')
+                norm = mcolors.Normalize(vmin=table_data['Winrate'].min(), vmax=table_data['Winrate'].max())
+                for i in range(1, len(table_data.index) + 1):
+                    value = table_data.iloc[i - 1, winrate_index]
+                    color = cmap(norm(value))
+                    table[i, j].set_facecolor(color)
+            else:
+                norm = mcolors.Normalize(vmin=table_data[col_name].min(), vmax=table_data[col_name].max())
+                for i in range(1, len(table_data.index) + 1):
+                    value = table_data.iloc[i - 1, j]
+                    color = cmap(norm(value))
+                    table[i, j].set_facecolor(color)
 
         header_color = '#D3D3D3'
         for j in range(len(table_data.columns)):
