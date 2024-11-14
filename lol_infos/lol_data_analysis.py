@@ -493,11 +493,11 @@ class AnalysePlayer:
             "gpm": "GPM",
             "gold_efficiency": "GEFF",
             "vspm": "VSPM",
-            "fb_participation": "FB",
-            "ft_participation": "FT",
+            "fb_participation": "FB%",
+            "ft_participation": "FT%",
             "team_gold_percentage": "GOLD%",
             "team_dpm_percentage": "DMG%",
-            "winrate": "Winrate",
+            "winrate": "Winrate%",
             "pickrate": "Pickrate",
             "wins": "Wins",
             "loses": "Loses",
@@ -540,8 +540,8 @@ class AnalysePlayer:
                 continue
             
             if col_name == "Wins" or col_name == "Loses":
-                winrate_index = table_data.columns.get_loc('Winrate')
-                norm = mcolors.Normalize(vmin=table_data['Winrate'].min(), vmax=table_data['Winrate'].max())
+                winrate_index = table_data.columns.get_loc('Winrate%')
+                norm = mcolors.Normalize(vmin=table_data['Winrate%'].min(), vmax=table_data['Winrate%'].max())
                 for i in range(1, len(table_data.index) + 1):
                     value = table_data.iloc[i - 1, winrate_index]
                     color = cmap(norm(value))
