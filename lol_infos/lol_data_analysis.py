@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 import pandas as pd
 import numpy as np
 import mongo_code.db_connection as db_conn
@@ -532,6 +533,21 @@ class AnalysePlayer:
         )
         table.auto_set_column_width(col=list(range(len(mean_df_top_10.columns))))
         table.set_fontsize(10)
+
+        cmap = plt.cm.RdYlGn
+        for j in range(1, len(table_data.columns)): 
+            norm = mcolors.Normalize(vmin=table_data.iloc[:, j].min(), vmax=table_data.iloc[:, j].max())
+            for i in range(1, len(table_data.index) + 1):
+                value = table_data.iloc[i - 1, j]
+                color = cmap(norm(value))
+                table[i, j].set_facecolor(color)
+
+        header_color = '#D3D3D3'
+        for j in range(len(table_data.columns)):
+            table[0, j].set_facecolor(header_color)
+        for i in range(1, len(table_data.index) + 1):
+            table[i, 0].set_facecolor(header_color)
+
         plt.show()
 
         return
