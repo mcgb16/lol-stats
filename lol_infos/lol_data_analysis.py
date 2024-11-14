@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
+from matplotlib.colors import LinearSegmentedColormap
 import pandas as pd
 import numpy as np
 import mongo_code.db_connection as db_conn
@@ -533,8 +534,10 @@ class AnalysePlayer:
         )
         table.auto_set_column_width(col=list(range(len(mean_df_top_10.columns))))
         table.set_fontsize(10)
+        
+        colors_gradient = ["#FF6F61", "#ffff8c", "#77DD77"]
+        cmap = LinearSegmentedColormap.from_list("custom_cmap", colors_gradient)
 
-        cmap = plt.cm.RdYlGn
         for j, col_name in enumerate(table_data.columns):
             if j == 0:
                 continue
@@ -553,7 +556,7 @@ class AnalysePlayer:
                     color = cmap(norm(value))
                     table[i, j].set_facecolor(color)
 
-        header_color = '#D3D3D3'
+        header_color = '#b39bd7'
         for j in range(len(table_data.columns)):
             table[0, j].set_facecolor(header_color)
         for i in range(1, len(table_data.index) + 1):
