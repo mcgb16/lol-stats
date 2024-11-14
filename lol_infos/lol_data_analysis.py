@@ -1,4 +1,6 @@
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
+from matplotlib.colors import LinearSegmentedColormap
 import pandas as pd
 import numpy as np
 import mongo_code.db_connection as db_conn
@@ -492,11 +494,11 @@ class AnalysePlayer:
             "gpm": "GPM",
             "gold_efficiency": "GEFF",
             "vspm": "VSPM",
-            "fb_participation": "FB",
-            "ft_participation": "FT",
+            "fb_participation": "FB%",
+            "ft_participation": "FT%",
             "team_gold_percentage": "GOLD%",
             "team_dpm_percentage": "DMG%",
-            "winrate": "Winrate",
+            "winrate": "Winrate%",
             "pickrate": "Pickrate",
             "wins": "Wins",
             "loses": "Loses",
@@ -532,6 +534,34 @@ class AnalysePlayer:
         )
         table.auto_set_column_width(col=list(range(len(mean_df_top_10.columns))))
         table.set_fontsize(10)
+        
+        colors_gradient = ["#FF6F61", "#ffff8c", "#77DD77"]
+        cmap = LinearSegmentedColormap.from_list("custom_cmap", colors_gradient)
+
+        for j, col_name in enumerate(table_data.columns):
+            if j == 0:
+                continue
+            
+            if col_name == "Wins" or col_name == "Loses":
+                winrate_index = table_data.columns.get_loc('Winrate%')
+                norm = mcolors.Normalize(vmin=table_data['Winrate%'].min(), vmax=table_data['Winrate%'].max())
+                for i in range(1, len(table_data.index) + 1):
+                    value = table_data.iloc[i - 1, winrate_index]
+                    color = cmap(norm(value))
+                    table[i, j].set_facecolor(color)
+            else:
+                norm = mcolors.Normalize(vmin=table_data[col_name].min(), vmax=table_data[col_name].max())
+                for i in range(1, len(table_data.index) + 1):
+                    value = table_data.iloc[i - 1, j]
+                    color = cmap(norm(value))
+                    table[i, j].set_facecolor(color)
+
+        header_color = '#b39bd7'
+        for j in range(len(table_data.columns)):
+            table[0, j].set_facecolor(header_color)
+        for i in range(1, len(table_data.index) + 1):
+            table[i, 0].set_facecolor(header_color)
+
         plt.show()
 
         return
