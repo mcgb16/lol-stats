@@ -79,8 +79,6 @@ class AnalysePlayer:
     def __numerical_analysis(self, p_df):
         # Médias
         kp_mean = round(np.mean(p_df['kp']), 1)
-        kda_mean = round(np.mean(p_df['kda']), 1)
-        vspm_mean = round(np.mean(p_df['vspm']), 1)
         fb_kill_mean = round(np.mean(p_df['firstBloodKill']) * 100, 1)
         fb_assist_mean = round(np.mean(p_df['firstBloodAssist']) * 100, 1)
         fb_participation_mean = round(fb_kill_mean + fb_assist_mean, 1)
@@ -136,8 +134,6 @@ class AnalysePlayer:
 
         mean_dict = {
             "kp": kp_mean,
-            "kda": kda_mean,
-            "vspm": vspm_mean,
             "fb_participation": fb_participation_mean,
             "ft_participation": ft_participation_mean,
             "winrate": winrate_mean,
