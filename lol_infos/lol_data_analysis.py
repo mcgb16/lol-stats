@@ -89,7 +89,7 @@ class AnalysePlayer:
         ft_participation_mean = round(ft_kill_mean + ft_assist_mean, 1)
         winrate_mean = round(np.mean(p_df["win"]) * 100, 1)
         wins = np.sum(p_df["win"])
-        loses = np.sum(p_df["win"] == False)
+        losses = np.sum(p_df["win"] == False)
 
         # Extremos
         max_kda = round(np.max(p_df['kda']), 1)
@@ -131,7 +131,7 @@ class AnalysePlayer:
             "max_gold_efficiency": max_gold_efficiency,
             "min_gold_efficiency": min_gold_efficiency,
             "wins": wins,
-            "loses": loses
+            "losses": losses
         }
 
         mean_dict = {
@@ -142,7 +142,7 @@ class AnalysePlayer:
             "ft_participation": ft_participation_mean,
             "winrate": winrate_mean,
             "wins": wins,
-            "loses": loses
+            "losses": losses
         }
 
         max_min_df = pd.DataFrame([max_min_dict])
@@ -170,7 +170,7 @@ class AnalysePlayer:
         team_dpm_percentage_mean = round(p_df['percentageTeamDpmChampions'].mean(), 1)
         winrate_mean = round(p_df['win'].mean() * 100, 1)
         wins = p_df['win'].apply(lambda x: x[x == True].count())
-        loses = p_df['win'].apply(lambda x: x[x == False].count())
+        losses = p_df['win'].apply(lambda x: x[x == False].count())
         pickrate = round(p_df.size(), 1)
 
         # Extremos
@@ -214,7 +214,7 @@ class AnalysePlayer:
             "min_gold_efficiency": min_gold_efficiency,
             "pickrate": pickrate,
             "wins": wins,
-            "loses": loses
+            "losses": losses
         }
 
         mean_dict = {
@@ -233,7 +233,7 @@ class AnalysePlayer:
             "winrate": winrate_mean,
             "pickrate": pickrate,
             "wins": wins,
-            "loses": loses
+            "losses": losses
         }
 
         max_min_df = pd.DataFrame(max_min_dict)
@@ -241,7 +241,54 @@ class AnalysePlayer:
 
         return mean_df, max_min_df
 
-    def create_account_plot(self, acc_df):
+    def create_acc_radar_plot(self, acc_df):
+        radar_df = acc_df[["kp","fb_participation","ft_participation"]]
+
+        fig, ax = plt.subplots(figsize=(10,6), subplot_kw=dict(polar=True))
+        num_vars = len(radar_df.columns)
+
+        values = radar_df.iloc[0].values.tolist()
+        values += values[:1]
+
+        angles = np.linspace(0, 2 * np.pi, num_vars, endpoint=False).tolist()
+        angles += angles[:1]
+
+        ax.fill(angles, values, color='blue', alpha=0.25)
+        ax.plot(angles, values, color='blue', linewidth=2)
+
+        ax.set_ylim(0, 100)
+        ax.set_yticks([20, 40, 60, 80, 100])
+        ax.set_yticklabels(['20%', '40%', '60%', '80%', '100%'], color='gray', fontsize=10)
+
+        labels = self.__adjust_col_labels(radar_df.columns)
+
+        ax.set_xticks(angles[:-1])
+        ax.set_xticklabels(labels, fontsize=12)
+
+        ax.set_title("Participação em Abates", fontsize=16, pad=20)
+        
+        plt.show()
+
+        return
+    
+    def create_acc_pie_plot(self, df):
+        wins = df.loc[0,"wins"]
+        losses = df.loc[0,"losses"]
+        winrate = df.loc[0,"winrate"]
+
+        labels = ['Wins', 'Losses']
+        sizes = [wins, losses]
+        colors = ['#4CAF50', '#F44336']
+        explode = (0.1, 0)            
+
+        fig, ax = plt.subplots(figsize=(10, 6))
+        ax.pie(sizes, labels=labels, autopct=lambda p: f"{np.round(p/100.*np.sum(sizes), 0):.0f}", startangle=90, colors=colors, explode=explode)
+
+        ax.text(0, 0, f"{winrate:.1f}%", ha='center', va='center', fontsize=20, fontweight='bold')
+        ax.set_title("Winrate", fontsize=16, pad=20)
+
+        plt.show()
+
         return
 
     def __adjust_col_labels(self, table_columns):
@@ -261,7 +308,7 @@ class AnalysePlayer:
             "winrate": "Winrate%",
             "pickrate": "Pickrate",
             "wins": "Wins",
-            "loses": "Loses",
+            "losses": "Losses",
             "championName": "Champion",
             "teamPosition": "Role"
         }
@@ -302,7 +349,7 @@ class AnalysePlayer:
             if j == 0:
                 continue
             
-            if col_name == "Wins" or col_name == "Loses":
+            if col_name == "Wins" or col_name == "Losses":
                 winrate_index = table_data.columns.get_loc('Winrate%')
                 norm = mcolors.Normalize(vmin=table_data['Winrate%'].min(), vmax=table_data['Winrate%'].max())
                 for i in range(1, len(table_data.index) + 1):
