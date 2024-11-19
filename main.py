@@ -1,6 +1,7 @@
 import lol_infos.lol_apis as la
 import basic_code.basic as basic
 import lol_infos.lol_data_analysis as lda
+import tk_layout.app_layout as app
 
 if __name__ == "__main__":
     pl_name, pl_tag = basic.ask_name_tag()
