@@ -365,9 +365,9 @@ class AnalysePlayer:
         for i in range(1, len(table_data.index) + 1):
             table[i, 0].set_facecolor(header_color)
 
-        plt.show()
+        # plt.show()
 
-        return
+        return fig
 
     def create_player_analysis(self):
         all_pl_df, all_games_df, all_bans_df, all_teams_df = self.__create_dfs_classic()

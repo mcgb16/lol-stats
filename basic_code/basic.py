@@ -35,6 +35,7 @@ def sum_data(initial_data, sum_time):
 
     return formatted_final_data
 
+# Deprecated.
 def ask_name_tag():
     player_name = input("Digite seu nick (sem a tag): ")
     player_tag = input("Digite sua tag: ")
