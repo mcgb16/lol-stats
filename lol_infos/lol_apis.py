@@ -31,9 +31,18 @@ class LolVerifier:
         return puuid
 
     # Para pegar todas as informações da conta do usuário.
-    # Ainda não usada.
     def get_acc_info(self,puuid):
         endpoint = f"/lol/summoner/v4/summoners/by-puuid/{puuid}"
+        url = self.base_url_platform + endpoint
+        response = requests.get(url, params=self.api_params)
+
+        response_checked = self.__check_response(response)
+
+        return response_checked
+    
+    # Para pegar os elos do player.
+    def get_acc_ranks(self,sum_id):
+        endpoint = f"/lol/league/v4/entries/by-summoner/{sum_id}"
         url = self.base_url_platform + endpoint
         response = requests.get(url, params=self.api_params)
 
