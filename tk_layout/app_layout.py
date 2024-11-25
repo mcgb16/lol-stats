@@ -91,11 +91,13 @@ class LolStatsApp:
         
         lol_acc = la.LolVerifier(pl_name, pl_tag)
         self.lol_acc_puuid = lol_acc.get_puuid()
+        lol_acc_infos = lol_acc.get_acc_info(self.lol_acc_puuid)
+        self.lol_acc_sum_id = lol_acc_infos["id"]
+        pl_elos = lol_acc.get_acc_ranks(self.lol_acc_sum_id)
 
         pl_history_save = basic.save_player_history(lol_acc, self.lol_acc_puuid)
 
         player_analysis = lda.AnalysePlayer(self.lol_acc_puuid)
-
         dfs_dict = player_analysis.create_player_analysis()
 
         self.analysis_page(dfs_dict)
