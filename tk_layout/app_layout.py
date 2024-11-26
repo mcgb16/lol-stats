@@ -29,7 +29,7 @@ class LolStatsApp:
         
         self.container.mainloop()
 
-    def analysis_page(self, dfs_dict):
+    def analysis_page(self, dfs_dict, basic_info_list):
         for widget in self.container.winfo_children():
             widget.destroy()
 
@@ -42,7 +42,26 @@ class LolStatsApp:
         self.bottom_frame = tk.Frame(self.root, height=100)
         self.bottom_frame.pack(fill="x", side="top", padx=10, pady=10)
 
+        self.__create_basic_info(basic_info_list)
         self.__create_carousel(dfs_dict)
+
+    def __create_basic_info(self, basic_info_list):
+        pl_name, pl_tag, pl_elos = basic_info_list
+
+        pl_name_output = tk.Label(self.top_frame,text=pl_name).grid(row=0, column=0, padx=10, pady=10)
+        pl_tag_output = tk.Label(self.top_frame,text=pl_tag).grid(row=0, column=1, padx=10, pady=10)
+
+        if len(pl_elos) > 0:
+            for i in range(len(pl_elos)):
+                pl_queue = tk.Label(self.top_frame,text=pl_elos[i]["Queue"]).grid(row=i + 1, column=0, padx=10, pady=10)
+                pl_tier = tk.Label(self.top_frame,text=pl_elos[i]["Tier"]).grid(row=i + 1, column=1, padx=10, pady=10)
+                pl_rank = tk.Label(self.top_frame,text=pl_elos[i]["Rank"]).grid(row=i + 1, column=2, padx=10, pady=10)
+                pl_lp = tk.Label(self.top_frame,text=pl_elos[i]["Lp"]).grid(row=i + 1, column=3, padx=10, pady=10)
+                pl_wins = tk.Label(self.top_frame,text=pl_elos[i]["Wins"]).grid(row=i + 1, column=4, padx=10, pady=10)
+                pl_losses = tk.Label(self.top_frame,text=pl_elos[i]["Losses"]).grid(row=i + 1, column=5, padx=10, pady=10)
+        else:
+            pass
+        
     
     def __create_carousel(self, dfs_dict):
         self.tables = []
@@ -91,13 +110,35 @@ class LolStatsApp:
         
         lol_acc = la.LolVerifier(pl_name, pl_tag)
         self.lol_acc_puuid = lol_acc.get_puuid()
+        lol_acc_infos = lol_acc.get_acc_info(self.lol_acc_puuid)
+        self.lol_acc_sum_id = lol_acc_infos["id"]
+        pl_elos = lol_acc.get_acc_ranks(self.lol_acc_sum_id)
+
+        pl_elos_cleaned = []
+        pl_elo_index = {
+            "Queue" : "",
+            "Tier" : "",
+            "Rank" : "",
+            "Lp" : "",
+            "Wins" : "",
+            "Losses" : ""
+        }
+
+        for i in pl_elos:
+            pl_elo_index["Queue"] = i["queueType"]
+            pl_elo_index["Tier"] = i["tier"]
+            pl_elo_index["Rank"] = i["rank"]
+            pl_elo_index["Lp"] = i["leaguePoints"]
+            pl_elo_index["Wins"] = i["wins"]
+            pl_elo_index["Losses"] = i["losses"]
+            pl_elos_cleaned.append(pl_elo_index.copy())
 
         pl_history_save = basic.save_player_history(lol_acc, self.lol_acc_puuid)
 
         player_analysis = lda.AnalysePlayer(self.lol_acc_puuid)
-
         dfs_dict = player_analysis.create_player_analysis()
+        basic_info_list = [pl_name,pl_tag, pl_elos_cleaned]
 
-        self.analysis_page(dfs_dict)
+        self.analysis_page(dfs_dict, basic_info_list)
         
         return
