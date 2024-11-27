@@ -61,8 +61,7 @@ class LolStatsApp:
                 pl_losses = tk.Label(self.top_frame,text=pl_elos[i]["Losses"]).grid(row=i + 1, column=5, padx=10, pady=10)
         else:
             pass
-        
-    
+         
     def __create_carousel(self, dfs_dict):
         self.tables = []
         self.current_table_index = 0
