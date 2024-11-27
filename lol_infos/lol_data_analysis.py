@@ -386,6 +386,15 @@ class AnalysePlayer:
         champion_mean_df, champion_max_min_df = self.__grouped_numerical_analysis(champions_current_player_df)
         role_mean_df, role_max_min_df = self.__grouped_numerical_analysis(role_current_player_df)
 
+        history_dfs = {
+            "players": all_pl_df,
+            "games": all_games_df,
+            "bans": all_bans_df,
+            "teams": all_teams_df,
+        }
+
+        create_history = self.__create_player_history(history_dfs)
+
         dfs_dict = {
             "no_filter_mean" : no_filter_mean_df,
             "no_filter_max_min" : no_filter_max_min_df,
@@ -396,3 +405,43 @@ class AnalysePlayer:
         }
 
         return dfs_dict
+
+    def __create_player_history(self, dfs):
+        player_info_to_maintain_history = [
+            "riotIdGameName",
+            "riotIdTagline",
+            "championName",
+            "kills",
+            "deaths",
+            "assists"            
+        ]
+
+        ban_info_to_maintain_history = [
+            "championId"           
+        ]
+
+        history_games = []     
+        unique_game = {}
+
+        for i in range(5):
+            current_game_players = dfs["players"][dfs["players"]['matchId'] == dfs["games"].iloc[i]['matchId']]
+            current_game_bans = dfs["bans"][dfs["bans"]['matchId'] == dfs["games"].iloc[i]['matchId']]
+            current_game_teams = dfs["teams"][dfs["teams"]['matchId'] == dfs["games"].iloc[i]['matchId']]
+            
+            for j in range(len(current_game_teams)):
+                team_info = []
+
+                current_team_players = current_game_players[current_game_players['teamId'] == current_game_teams.iloc[j]['teamId']]
+                current_team_bans = current_game_bans[current_game_bans['teamId'] == current_game_teams.iloc[j]['teamId']]
+
+                current_team_players_cleaned = current_team_players[player_info_to_maintain_history]                
+                current_team_bans_cleaned = current_team_bans[ban_info_to_maintain_history]
+
+                team_info.append(current_team_players_cleaned)
+                team_info.append(current_team_bans_cleaned)
+
+                unique_game[current_game_teams.iloc[j]['teamName']] = team_info
+            
+            history_games.append(unique_game)
+
+        return history_games
