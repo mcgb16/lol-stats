@@ -393,7 +393,7 @@ class AnalysePlayer:
             "teams": all_teams_df,
         }
 
-        create_history = self.__create_player_history(history_dfs)
+        history_games = self.__create_player_history(history_dfs)
 
         dfs_dict = {
             "no_filter_mean" : no_filter_mean_df,
@@ -404,7 +404,7 @@ class AnalysePlayer:
             "role_max_min" : role_max_min_df
         }
 
-        return dfs_dict
+        return dfs_dict, history_games
 
     def __create_player_history(self, dfs):
         player_info_to_maintain_history = [
@@ -423,7 +423,7 @@ class AnalysePlayer:
         history_games = []     
         unique_game = {}
 
-        for i in range(5):
+        for i in range(1):
             current_game_players = dfs["players"][dfs["players"]['matchId'] == dfs["games"].iloc[i]['matchId']]
             current_game_bans = dfs["bans"][dfs["bans"]['matchId'] == dfs["games"].iloc[i]['matchId']]
             current_game_teams = dfs["teams"][dfs["teams"]['matchId'] == dfs["games"].iloc[i]['matchId']]
@@ -434,6 +434,12 @@ class AnalysePlayer:
                 current_team_players = current_game_players[current_game_players['teamId'] == current_game_teams.iloc[j]['teamId']]
                 current_team_bans = current_game_bans[current_game_bans['teamId'] == current_game_teams.iloc[j]['teamId']]
 
+                player_being_analysed_df = current_team_players[current_team_players['puuid'] == self.puuid]
+
+                if player_being_analysed_df.empty == False:
+                    player_being_analysed_champion = player_being_analysed_df.iloc[0]["championName"]
+                    player_being_analysed_kda = f"{player_being_analysed_df.iloc[0]['kills']} / {player_being_analysed_df.iloc[0]['deaths']} / {player_being_analysed_df.iloc[0]['assists']}"
+
                 current_team_players_cleaned = current_team_players[player_info_to_maintain_history]                
                 current_team_bans_cleaned = current_team_bans[ban_info_to_maintain_history]
 
@@ -441,6 +447,9 @@ class AnalysePlayer:
                 team_info.append(current_team_bans_cleaned)
 
                 unique_game[current_game_teams.iloc[j]['teamName']] = team_info
+            
+            unique_game["champion"] = player_being_analysed_champion
+            unique_game["kda"] = player_being_analysed_kda
             
             history_games.append(unique_game)
 
