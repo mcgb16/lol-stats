@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 import lol_infos.lol_apis as la
 import basic_code.basic as basic
 import lol_infos.lol_data_analysis as lda
@@ -9,8 +10,18 @@ class LolStatsApp:
         self.root = tk.Tk()
         self.root.title("Lol Stats")
         self.root.geometry(f"1280x720")
-        self.container = tk.Frame(self.root)
-        self.container.pack(fill="both", expand=True)
+
+        self.canvas = tk.Canvas(self.root)
+        self.scrollbar = ttk.Scrollbar(self.root, orient="vertical", command=self.canvas.yview)
+        self.container = tk.Frame(self.canvas)
+
+        self.canvas.configure(yscrollcommand=self.scrollbar.set)
+        self.scrollbar.pack(side="right", fill="y")
+        self.canvas.pack(side="left", fill="both", expand=True)
+
+        self.canvas.create_window((0, 0), window=self.container, anchor="nw")
+
+        self.container.bind("<Configure>", lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all")))
 
     def main_page(self):
         for widget in self.container.winfo_children():
@@ -29,21 +40,22 @@ class LolStatsApp:
         
         self.container.mainloop()
 
-    def analysis_page(self, dfs_dict, basic_info_list):
+    def analysis_page(self, dfs_dict, basic_info_list, history_games):
         for widget in self.container.winfo_children():
             widget.destroy()
+        
+        self.top_frame = tk.Frame(self.container, height=300)
+        self.top_frame.grid(row=0, column=0, sticky="ew")
 
-        self.top_frame = tk.Frame(self.root, height=300)
-        self.top_frame.pack(fill="x", side="top", padx=10, pady=10)
+        self.middle_frame = tk.Frame(self.container, height=300)
+        self.middle_frame.grid(row=1, column=0, sticky="ew")
 
-        self.middle_frame = tk.Frame(self.root, height=300)
-        self.middle_frame.pack(fill="x", side="top", padx=10, pady=10)
-
-        self.bottom_frame = tk.Frame(self.root, height=100)
-        self.bottom_frame.pack(fill="x", side="top", padx=10, pady=10)
+        self.bottom_frame = tk.Frame(self.container, height=100)
+        self.bottom_frame.grid(row=2, column=0, sticky="ew")
 
         self.__create_basic_info(basic_info_list)
         self.__create_carousel(dfs_dict)
+        self.__create_history(history_games)
 
     def __create_basic_info(self, basic_info_list):
         pl_name, pl_tag, pl_elos = basic_info_list
@@ -135,9 +147,9 @@ class LolStatsApp:
         pl_history_save = basic.save_player_history(lol_acc, self.lol_acc_puuid)
 
         player_analysis = lda.AnalysePlayer(self.lol_acc_puuid)
-        dfs_dict = player_analysis.create_player_analysis()
+        dfs_dict, history_games = player_analysis.create_player_analysis()
         basic_info_list = [pl_name,pl_tag, pl_elos_cleaned]
 
-        self.analysis_page(dfs_dict, basic_info_list)
+        self.analysis_page(dfs_dict, basic_info_list, history_games)
         
         return
