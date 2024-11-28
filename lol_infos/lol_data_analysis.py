@@ -393,7 +393,7 @@ class AnalysePlayer:
             "teams": all_teams_df,
         }
 
-        create_history = self.__create_player_history(history_dfs)
+        history_games = self.__create_player_history(history_dfs)
 
         dfs_dict = {
             "no_filter_mean" : no_filter_mean_df,
@@ -404,7 +404,7 @@ class AnalysePlayer:
             "role_max_min" : role_max_min_df
         }
 
-        return dfs_dict
+        return dfs_dict, history_games
 
     def __create_player_history(self, dfs):
         player_info_to_maintain_history = [
