@@ -1,6 +1,21 @@
 from datetime import datetime, timedelta
 import lol_infos.lol_data_cleaning as ldc
 import mongo_code.db_connection as db_conn
+import lol_infos.lol_apis as la
+
+def apis_basic_info(pl_name, pl_tag):
+    lol_acc = la.LolVerifier(pl_name, pl_tag)
+    lol_acc_puuid = lol_acc.get_puuid()
+    lol_acc_infos = lol_acc.get_acc_info(lol_acc_puuid)
+    lol_acc_sum_id = lol_acc_infos["id"]
+
+    api_basic = {
+        "lol_acc" : lol_acc,
+        "puuid" : lol_acc_puuid,
+        "sum_id" : lol_acc_sum_id
+    }
+    
+    return api_basic
 
 def calculate_time_seconds(sec_time):
     sec_time = int(sec_time)
