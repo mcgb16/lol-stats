@@ -177,6 +177,30 @@ def clean_game_data(game_data):
 
     return game_data
 
+def clean_elo_data(lol_acc, acc_sum_id):
+    pl_elos = lol_acc.get_acc_ranks(acc_sum_id)
+
+    pl_elos_cleaned = []
+    pl_elo_index = {
+        "Queue" : "",
+        "Tier" : "",
+        "Rank" : "",
+        "Lp" : "",
+        "Wins" : "",
+        "Losses" : ""
+    }
+
+    for i in pl_elos:
+        pl_elo_index["Queue"] = i["queueType"]
+        pl_elo_index["Tier"] = i["tier"]
+        pl_elo_index["Rank"] = i["rank"]
+        pl_elo_index["Lp"] = i["leaguePoints"]
+        pl_elo_index["Wins"] = i["wins"]
+        pl_elo_index["Losses"] = i["losses"]
+        pl_elos_cleaned.append(pl_elo_index.copy())
+    
+    return pl_elos_cleaned
+
 def organize_match_timeline_data(match_dict):
     pass
 
