@@ -146,28 +146,87 @@ Processa os dados de elo do jogador.
 ### `lol_infos.lol_data_analysis`
 
 #### **`class AnalysePlayer(puuid)`**
-Classe para análise de dados do jogador.
+Classe responsável por analisar os dados de um jogador específico.
+
 - **Parâmetros:**
-  - `puuid` (str): PUUID do jogador.
+  - `puuid` (str): O PUUID do jogador a ser analisado.
+
+#### **`AnalysePlayer.__create_dfs_classic()`**
+Cria DataFrames a partir do histórico de partidas do jogador no modo clássico.  Filtra partidas válidas (com duração superior a 15 minutos) e as organiza em DataFrames separados para informações do jogador, informações da partida, bans e times.
+
+- **Retorno:**
+    - `player_info_df` (DataFrame): DataFrame contendo informações dos jogadores em cada partida.
+    - `game_info_df` (DataFrame): DataFrame com informações gerais de cada partida.
+    - `bans_info_df` (DataFrame): DataFrame com informações sobre os bans de cada partida.
+    - `teams_info_df` (DataFrame): DataFrame com informações sobre os times em cada partida.
+    - `None`: Se o jogador não tiver histórico de partidas.
+
+#### **`AnalysePlayer.__numerical_analysis(p_df)`**
+Calcula estatísticas numéricas descritivas, como médias e valores extremos (mínimo e máximo), a partir de um DataFrame contendo dados do jogador (`p_df`).  As estatísticas calculadas incluem KP, participação em First Blood, participação em First Tower, Winrate, KDA, FPM, DPM, VSPM, participação no ouro do time, entre outras.
+
+- **Parâmetros:**
+  - `p_df` (DataFrame): DataFrame contendo os dados do jogador a serem analisados.
+
+- **Retorno:**
+    - `mean_df` (DataFrame): DataFrame contendo as médias das estatísticas calculadas.
+    - `max_min_df` (DataFrame): DataFrame contendo os valores mínimos e máximos das estatísticas calculadas.
+
+#### **`AnalysePlayer.__grouped_numerical_analysis(p_df)`**
+Calcula estatísticas numéricas descritivas, semelhante a `__numerical_analysis`, mas agrupadas por uma determinada característica, como campeão ou função (role).  Isso permite comparar o desempenho do jogador com diferentes campeões ou em diferentes funções.
+
+- **Parâmetros:**
+  - `p_df` (DataFrame): DataFrame contendo os dados do jogador agrupados (ex: por campeão).
+
+- **Retorno:**
+    - `mean_df` (DataFrame): DataFrame contendo as médias das estatísticas calculadas, agrupadas pela característica especificada.
+    - `max_min_df` (DataFrame): DataFrame contendo os valores mínimos e máximos das estatísticas calculadas, agrupadas pela característica especificada.
 
 #### **`AnalysePlayer.create_acc_radar_plot(acc_df)`**
-Gera um gráfico de radar com estatísticas do jogador.
+Gera um gráfico de radar mostrando a participação do jogador em abates (KP), First Blood (FB) e First Tower (FT).  O gráfico permite visualizar o desempenho do jogador nessas três métricas importantes.
+
 - **Parâmetros:**
   - `acc_df` (DataFrame): DataFrame contendo os dados do jogador.
 
+- **Retorno:** None. Exibe o gráfico gerado.
+
 #### **`AnalysePlayer.create_acc_pie_plot(df)`**
-Gera um gráfico de pizza com a winrate do jogador.
+Gera um gráfico de pizza exibindo a winrate (taxa de vitórias) do jogador.  O gráfico mostra a proporção de vitórias e derrotas do jogador.
+
 - **Parâmetros:**
-  - `df` (DataFrame): DataFrame contendo os dados do jogador.
+  - `df` (DataFrame): DataFrame contendo os dados do jogador, incluindo o número de vitórias e derrotas.
+
+- **Retorno:**  None. Exibe o gráfico gerado.
+
+#### **`AnalysePlayer.__adjust_col_labels(table_columns)`**
+Função auxiliar que ajusta os rótulos das colunas de um DataFrame para serem exibidos em gráficos e tabelas.  Converte nomes de colunas em formato de código (ex: "kp") para um formato mais legível (ex: "KP").
+
+- **Parâmetros:**
+  - `table_columns` (Index):  Índice de colunas do DataFrame.
+
+- **Retorno:** Lista com os novos rótulos das colunas.
 
 #### **`AnalysePlayer.create_grouped_mean_table_plot(mean_df)`**
-Cria uma tabela com as médias das estatísticas do jogador, agrupadas por campeão ou função.
+Cria uma tabela com as médias das estatísticas do jogador, agrupadas por campeão ou função. A tabela permite comparar o desempenho do jogador com diferentes campeões ou em diferentes funções de forma mais detalhada.
+
 - **Parâmetros:**
-  - `mean_df` (DataFrame): DataFrame contendo as médias das estatísticas.
+  - `mean_df` (DataFrame): DataFrame contendo as médias das estatísticas, agrupadas por campeão ou função.
+
+- **Retorno:**  `fig` (Figure): Objeto da figura gerada pelo matplotlib.
 
 #### **`AnalysePlayer.create_player_analysis()`**
-Realiza a análise completa dos dados do jogador.
-- **Retorno:** Tupla contendo um dicionário de DataFrames e o histórico de partidas.
+Realiza a análise completa dos dados do jogador.  Essa função orquestra a execução das outras funções do módulo, criando os DataFrames, calculando as estatísticas e preparando os dados para a geração dos gráficos.
+
+- **Retorno:**
+    - `dfs_dict` (dict): Dicionário contendo os DataFrames gerados durante a análise (média, mínimo/máximo, agrupados por campeão e por função).
+    - `history_games` (list): Lista contendo o histórico de partidas do jogador, com informações resumidas de cada partida.
+
+#### **`AnalysePlayer.__create_player_history(dfs)`**
+Cria um histórico resumido das partidas do jogador, incluindo informações como nome de invocador, campeão jogado, KDA, bans e informações dos jogadores de cada time.
+
+- **Parâmetros:**
+  - `dfs` (dict): Dicionário contendo os DataFrames com os dados das partidas (`players`, `games`, `bans`, `teams`).
+
+- **Retorno:** `history_games` (list): Lista de dicionários, onde cada dicionário representa uma partida e contém informações resumidas sobre ela.
 
 ---
 
