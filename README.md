@@ -1,4 +1,4 @@
-# Documentação do Projeto de Análise de Dados de League of Legends
+# Documentação do Projeto "Lol Stats"
 
 Este projeto utiliza as APIs do Riot Games para coletar e analisar dados de partidas de League of Legends, fornecendo visualizações e insights sobre o desempenho de um jogador. O projeto utiliza um banco de dados MongoDB para armazenar dados das partidas e informações auxiliares, como nomes de itens, campeões, runas, etc.
 
