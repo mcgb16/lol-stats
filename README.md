@@ -1,291 +1,234 @@
-# **basic.py**
+# Documentação do Projeto de Análise de Dados de League of Legends
 
-Este módulo fornece funções utilitárias para lidar com dados do League of Legends, desde o consumo de APIs até o processamento e validação de informações de partidas.
+Este projeto utiliza as APIs do Riot Games para coletar e analisar dados de partidas de League of Legends, fornecendo visualizações e insights sobre o desempenho de um jogador. O projeto utiliza um banco de dados MongoDB para armazenar dados das partidas e informações auxiliares, como nomes de itens, campeões, runas, etc.
 
-## **Funções Disponíveis**
+## Estrutura do Projeto
 
-### **`apis_basic_info(pl_name, pl_tag)`**
-Obtém informações básicas de um jogador usando a classe `LolVerifier`.
+O projeto é organizado em módulos para facilitar a manutenção e o desenvolvimento:
+
+- **`basic_code.basic`**: Contém funções utilitárias para manipulação de dados, conversões de tempo e data, e outras funções auxiliares.
+- **`lol_infos.lol_apis`**: Responsável pela comunicação com as APIs do Riot Games, fornecendo métodos para buscar informações de jogadores e partidas.
+- **`lol_infos.lol_data_cleaning`**: Realiza a limpeza, organização e transformação dos dados brutos da API em um formato adequado para análise.
+- **`lol_infos.lol_data_analysis`**: Contém a lógica para analisar os dados processados e gerar visualizações como gráficos e tabelas.
+- **`mongo_code.db_connection`**: Gerencia a conexão e as operações com o banco de dados MongoDB.
+- **`main.py`**: Arquivo principal que orquestra a execução do projeto.
+
+## Descrição dos Módulos e suas Funcionalidades
+
+### `basic_code.basic`
+
+##### **`apis_basic_info(pl_name, pl_tag)`**
+Obtém informações básicas da conta do jogador.
 - **Parâmetros:**
-  - `pl_name` (str): Nome do jogador.
+  - `pl_name` (str): Nome de invocador do jogador.
   - `pl_tag` (str): Tag do jogador.
-- **Retorno:** Dicionário contendo:
-  - `lol_acc` (LolVerifier): Instância da classe `LolVerifier`.
-  - `puuid` (str): Identificador único do jogador.
-  - `sum_id` (str): ID do invocador.
+- **Retorno:** Dicionário contendo o objeto `LolVerifier`, PUUID e Summoner ID.
 
----
-
-### **`calculate_time_seconds(sec_time)`**
-Converte um tempo em segundos para o formato `MM:SS`.
+##### **`calculate_time_seconds(sec_time)`**
+Converte segundos para o formato minutos:segundos.
 - **Parâmetros:**
   - `sec_time` (int): Tempo em segundos.
-- **Retorno:** Tempo formatado como string `MM:SS`.
+- **Retorno:** String representando o tempo no formato `MM:SS`.
 
----
-
-### **`calculate_timestamps(timestamp_milliseconds)`**
-Converte um timestamp em milissegundos para a data e hora formatadas.
+##### **`calculate_timestamps(timestamp_milliseconds)`**
+Converte um timestamp em milissegundos para o formato de data e hora.
 - **Parâmetros:**
   - `timestamp_milliseconds` (int): Timestamp em milissegundos.
-- **Retorno:** Data e hora formatadas como string `DD-MM-YYYY HH:MM:SS`.
+- **Retorno:** String representando a data e hora no formato `DD-MM-YYYY HH:MM:SS`.
 
----
-
-### **`sum_data(initial_data, sum_time)`**
+##### **`sum_data(initial_data, sum_time)`**
 Soma um tempo a uma data inicial.
 - **Parâmetros:**
   - `initial_data` (str): Data inicial no formato `DD-MM-YYYY HH:MM:SS`.
   - `sum_time` (str): Tempo a ser somado no formato `MM:SS`.
 - **Retorno:** Data final formatada como string `DD-MM-YYYY HH:MM:SS`.
 
----
+##### **`ask_name_tag()`**
+**(Deprecated)** Solicita o nome e tag do jogador via input.
 
-### **`ask_name_tag()`**
-**Depreciada.** Solicita ao usuário o nome e tag do jogador.
-- **Retorno:** Tuple contendo o nome e a tag do jogador.
-
----
-
-### **`save_player_history(lol_acc, lol_acc_puuid)`**
-Salva o histórico de partidas de um jogador no banco de dados.
+##### **`save_player_history(lol_acc, lol_acc_puuid)`**
+Salva o histórico de partidas do jogador no banco de dados.
 - **Parâmetros:**
-  - `lol_acc` (LolVerifier): Instância da classe `LolVerifier`.
-  - `lol_acc_puuid` (str): Identificador único do jogador.
-- **Retorno:** Resultado do processo de salvamento no banco de dados.
+  - `lol_acc` (LolVerifier): Objeto da classe LolVerifier.
+  - `lol_acc_puuid` (str): PUUID do jogador.
+- **Retorno:** Resultado da operação de salvamento no banco de dados.
 
----
-
-### **`check_invalid_game(game_duration)`**
-Verifica se a duração de uma partida é inválida (menor que 15 minutos).
+##### **`check_invalid_game(game_duration)`**
+Verifica se a duração da partida é válida (maior que 15 minutos).
 - **Parâmetros:**
   - `game_duration` (str): Duração da partida no formato `MM:SS`.
-- **Retorno:** String indicando se a partida é `"invalid"` ou `"valid"`.
+- **Retorno:** String `"valid"` ou `"invalid"`.
 
 ---
 
-## **Dependências**
-- `datetime`: Para manipulação de datas e horas.
-- `lol_infos.lol_data_cleaning`: Biblioteca customizada para limpeza de dados.
-- `mongo_code.db_connection`: Biblioteca customizada para conexão com banco de dados.
-- `lol_infos.lol_apis`: Classe `LolVerifier` para acesso às APIs da Riot Games.
+### `lol_infos.lol_apis`
 
----
-
-## **Observações**
-- A função `ask_name_tag` está marcada como **depreciada** e não é recomendada para uso.
-- Certifique-se de configurar corretamente as dependências, como conexões de banco de dados e estrutura de APIs.
-
-
-# **lol_apis.py**
-
-Este módulo fornece uma classe `LolVerifier` para interagir com a API da Riot Games, permitindo acessar informações sobre contas, partidas e classificações no jogo League of Legends.
-
-## **Estrutura do Arquivo**
-- Importações: Dependências do módulo (`extras.ex_info` e `requests`).
-- Classe: `LolVerifier`.
-
----
-
-## **Classe LolVerifier**
-
-### **Descrição**
-A classe `LolVerifier` fornece métodos para acessar várias informações sobre jogadores e partidas do League of Legends usando a API da Riot Games.
-
-### **Inicialização**
-```python
-LolVerifier(name, tag)
-```
-
+#### **`class LolVerifier(name, tag)`**
+Classe para interagir com as APIs do Riot Games.
 - **Parâmetros:**
   - `name` (str): Nome de invocador do jogador.
   - `tag` (str): Tag do jogador.
-- **Atributos:**
-  - `api` (str): Chave da API, importada do módulo `extras.ex_info`.
-  - `base_url_platform` (str): URL da plataforma regional da Riot Games.
-  - `base_url_region` (str): URL da região global da Riot Games.
-  - `api_params` (dict): Parâmetros para autenticação da API.
 
----
+#### **`LolVerifier.get_puuid()`**
+Retorna o PUUID do jogador.
+- **Retorno:** PUUID do jogador (string).
 
-### **Métodos**
-
-#### **`__check_response(response)`**
-Valida o código de status da resposta e retorna os dados JSON se bem-sucedido.
+#### **`LolVerifier.get_acc_info(puuid)`**
+Retorna informações da conta do jogador.
 - **Parâmetros:**
-  - `response` (Response): Objeto da resposta da API.
-- **Retorno:** Dados JSON da resposta.
-- **Erro:** Lança uma exceção para status de erro.
+  - `puuid` (str): PUUID do jogador.
+- **Retorno:** Dicionário com as informações da conta.
 
----
-
-#### **`get_puuid()`**
-Obtém o `puuid` de um jogador pelo seu nome e tag.
-- **Retorno:** `puuid` (str).
-
----
-
-#### **`get_acc_info(puuid)`**
-Obtém informações detalhadas da conta de um jogador.
-- **Parâmetros:** 
-  - `puuid` (str): Identificador único do jogador.
-- **Retorno:** Informações da conta (JSON).
-
----
-
-#### **`get_acc_ranks(sum_id)`**
-Obtém os elos do jogador em diferentes filas ranqueadas.
+#### **`LolVerifier.get_acc_ranks(sum_id)`**
+Retorna as informações de ranking do jogador.
 - **Parâmetros:**
-  - `sum_id` (str): ID do invocador.
-- **Retorno:** Dados dos elos (JSON).
+  - `sum_id` (str): Summoner ID do jogador.
+- **Retorno:** Lista de dicionários com informações de ranking em diferentes filas.
 
----
-
-#### **`get_all_matchs(puuid)`**
-Obtém as IDs das últimas partidas do jogador (até 85 por padrão).
+#### **`LolVerifier.get_all_matchs(puuid)`**
+Retorna uma lista de IDs de partidas do jogador.
 - **Parâmetros:**
-  - `puuid` (str): Identificador único do jogador.
-- **Retorno:** Lista de IDs das partidas.
+  - `puuid` (str): PUUID do jogador.
+- **Retorno:** Lista de IDs de partidas.
 
----
-
-#### **`get_match_geral_info(match_id)`**
-Obtém informações gerais de uma partida específica.
+#### **`LolVerifier.get_match_geral_info(match_id)`**
+Retorna informações detalhadas de uma partida.
 - **Parâmetros:**
   - `match_id` (str): ID da partida.
-- **Retorno:** Informações da partida (JSON).
+- **Retorno:** Dicionário com as informações da partida.
+
+#### **`LolVerifier.get_match_timeline_info(match_id)`**
+**(Não utilizada)** Destinada a retornar informações da timeline da partida.
+
+#### **`LolVerifier.get_current_match(puuid)`**
+**(Não utilizada)** Destinada a retornar informações da partida em andamento.
 
 ---
 
-#### **`get_match_timeline_info(match_id)`**
-Obtém informações detalhadas baseadas na timeline de uma partida.
+### `lol_infos.lol_data_cleaning`
+
+#### **`organize_match_geral_data(match_dict)`**
+Organiza os dados brutos da partida em um dicionário estruturado.
 - **Parâmetros:**
-  - `match_id` (str): ID da partida.
-- **Retorno:** Informações detalhadas da timeline (JSON).
+  - `match_dict` (dict): Dicionário contendo os dados brutos da partida.
+- **Retorno:** Dicionário com os dados organizados.
 
----
-
-#### **`get_current_match(puuid)`**
-Obtém informações da partida atual do jogador.
+#### **`clean_teams_data(teams_data)`**
+Limpa e processa os dados dos times.
 - **Parâmetros:**
-  - `puuid` (str): Identificador único do jogador.
-- **Retorno:** Informações da partida atual (JSON).
+  - `teams_data` (dict): Dicionário contendo os dados dos times.
+- **Retorno:** Dicionário com os dados dos times limpos e processados.
 
----
-
-## **Dependências**
-- `extras.ex_info`: Módulo customizado que contém a chave da API (`my_api`).
-- `requests`: Biblioteca para realizar chamadas HTTP.
-
----
-
-## **Observações**
-- Métodos `get_match_timeline_info` e `get_current_match` não estão atualmente em uso no projeto.
-- Ajuste o número de partidas no método `get_all_matchs` alterando o parâmetro `count`.
-
-
-# **lol_data_analysis.py**
-
-Este módulo fornece a classe `AnalysePlayer` para realizar análises avançadas de dados de partidas de League of Legends. A classe permite criar DataFrames, realizar análises numéricas e gerar visualizações úteis, como gráficos de radar e de pizza.
-
-## **Classe AnalysePlayer**
-
-### **Descrição**
-A classe `AnalysePlayer` utiliza dados armazenados em um banco de dados MongoDB para criar relatórios e análises sobre o desempenho de um jogador.
-
-### **Inicialização**
-```python
-AnalysePlayer(puuid)
-```
+#### **`clean_players_data(players_data)`**
+Limpa e processa os dados dos jogadores.
 - **Parâmetros:**
-  - `puuid` (str): Identificador único do jogador.
+  - `players_data` (list): Lista contendo os dados dos jogadores.
+- **Retorno:** Lista com os dados dos jogadores limpos e processados.
 
----
-
-### **Métodos Principais**
-
-#### **`create_acc_radar_plot(acc_df)`**
-Cria um gráfico de radar para exibir participação em abates, first blood e first tower.
+#### **`clean_game_data(game_data)`**
+Limpa e formata os dados gerais da partida.
 - **Parâmetros:**
-  - `acc_df` (DataFrame): Dados do jogador para análise.
-- **Retorno:** None (mostra o gráfico).
+  - `game_data` (dict): Dicionário contendo os dados gerais da partida.
+- **Retorno:** Dicionário com os dados limpos e formatados.
 
----
-
-#### **`create_acc_pie_plot(df)`**
-Cria um gráfico de pizza para exibir a taxa de vitórias do jogador.
+#### **`clean_elo_data(lol_acc, acc_sum_id)`**
+Processa os dados de elo do jogador.
 - **Parâmetros:**
-  - `df` (DataFrame): Dados contendo as informações de vitórias e derrotas.
-- **Retorno:** None (mostra o gráfico).
+  - `lol_acc` (LolVerifier): Objeto da classe LolVerifier.
+  - `acc_sum_id` (str): Summoner ID do jogador.
+- **Retorno:** Lista de dicionários contendo informações de elo.
+
+#### **`organize_match_timeline_data(match_dict)`**
+**(Não implementada)**  Função prevista para processar os dados da timeline da partida.
 
 ---
 
-#### **`create_grouped_mean_table_plot(mean_df)`**
-Gera uma tabela com as médias agrupadas de métricas do jogador.
+### `lol_infos.lol_data_analysis`
+
+#### **`class AnalysePlayer(puuid)`**
+Classe para análise de dados do jogador.
 - **Parâmetros:**
-  - `mean_df` (DataFrame): Dados agrupados para a análise.
-- **Retorno:** Figura do matplotlib.
+  - `puuid` (str): PUUID do jogador.
 
----
-
-#### **`create_player_analysis()`**
-Executa uma análise completa do jogador, incluindo cálculos de métricas, agrupamentos e histórico.
-- **Retorno:** 
-  - `dfs_dict` (dict): Dicionário contendo DataFrames com métricas calculadas.
-  - `history_games` (list): Histórico de partidas formatado.
-
----
-
-### **Métodos Auxiliares**
-
-#### **`__create_dfs_classic()`**
-Cria DataFrames com informações de jogadores, partidas, bans e equipes.
-- **Retorno:** Tuple com os DataFrames criados.
-
----
-
-#### **`__numerical_analysis(p_df)`**
-Calcula métricas médias e extremos de desempenho do jogador.
+#### **`AnalysePlayer.create_acc_radar_plot(acc_df)`**
+Gera um gráfico de radar com estatísticas do jogador.
 - **Parâmetros:**
-  - `p_df` (DataFrame): Dados de desempenho do jogador.
-- **Retorno:** Dois DataFrames com as métricas médias e os valores máximos/mínimos.
+  - `acc_df` (DataFrame): DataFrame contendo os dados do jogador.
 
----
-
-#### **`__grouped_numerical_analysis(p_df)`**
-Calcula métricas agrupadas por campeão ou posição.
+#### **`AnalysePlayer.create_acc_pie_plot(df)`**
+Gera um gráfico de pizza com a winrate do jogador.
 - **Parâmetros:**
-  - `p_df` (GroupBy): Dados agrupados do jogador.
-- **Retorno:** Dois DataFrames com as métricas médias e os valores máximos/mínimos.
+  - `df` (DataFrame): DataFrame contendo os dados do jogador.
 
----
-
-#### **`__adjust_col_labels(table_columns)`**
-Ajusta os nomes das colunas para exibição em tabelas e gráficos.
+#### **`AnalysePlayer.create_grouped_mean_table_plot(mean_df)`**
+Cria uma tabela com as médias das estatísticas do jogador, agrupadas por campeão ou função.
 - **Parâmetros:**
-  - `table_columns` (list): Lista de colunas originais.
-- **Retorno:** Lista de colunas ajustadas.
+  - `mean_df` (DataFrame): DataFrame contendo as médias das estatísticas.
+
+#### **`AnalysePlayer.create_player_analysis()`**
+Realiza a análise completa dos dados do jogador.
+- **Retorno:** Tupla contendo um dicionário de DataFrames e o histórico de partidas.
 
 ---
 
-#### **`__create_player_history(dfs)`**
-Cria um histórico formatado das partidas do jogador.
+### `mongo_code.db_connection`
+
+#### **`find_items(id_item)`**
+Busca um item pelo ID.
 - **Parâmetros:**
-  - `dfs` (dict): Dicionário contendo DataFrames de jogadores, partidas, bans e equipes.
-- **Retorno:** Lista com o histórico das partidas.
+  - `id_item` (int/str): ID do item.
+- **Retorno:** Nome do item.
+
+#### **`find_runes(id_rune)`**
+Busca uma runa pelo ID.
+- **Parâmetros:**
+  - `id_rune` (int/str): ID da runa.
+- **Retorno:** Nome da runa.
+
+#### **`find_summoner_spells(id_spell)`**
+Busca um feitiço de invocador pelo ID.
+- **Parâmetros:**
+  - `id_spell` (int/str): ID do feitiço.
+- **Retorno:** Nome do feitiço.
+
+#### **`find_champion_by_id(id_champion)`**
+Busca um campeão pelo ID.
+- **Parâmetros:**
+  - `id_champion` (int/str): ID do campeão.
+- **Retorno:** Nome do campeão.
+
+#### **`find_champion_by_name(name_champion)`**
+Busca um campeão pelo nome.
+- **Parâmetros:**
+  - `name_champion` (str): Nome do campeão.
+- **Retorno:** Informações do campeão.
+
+#### **`find_match(id_match)`**
+Busca uma partida pelo ID.
+- **Parâmetros:**
+  - `id_match` (str): ID da partida.
+- **Retorno:** Dados da partida.
+
+#### **`find_player_history(puuid)`**
+Busca o histórico de partidas de um jogador.
+- **Parâmetros:**
+  - `puuid` (str): PUUID do jogador.
+- **Retorno:** Lista de partidas.
+
+#### **`create_match_db(matchs_data)`**
+Salva os dados de uma ou várias partidas no banco de dados.
+- **Parâmetros:**
+  - `matchs_data` (list): Lista de dicionários, onde cada dicionário representa os dados de uma partida.
+- **Retorno:** Resultado da operação de inserção no banco de dados.
+
+#### **`find_queue_type(queue_id)`**
+Busca o tipo de fila pelo ID.
+- **Parâmetros:**
+  - `queue_id` (int): ID da fila.
+- **Retorno:** Descrição do tipo de fila.
 
 ---
 
-## **Dependências**
-- `matplotlib`: Para geração de gráficos.
-- `pandas`: Para manipulação de dados.
-- `numpy`: Para cálculos numéricos.
-- `mongo_code.db_connection`: Biblioteca customizada para conexão ao banco de dados.
-- `basic_code.basic`: Utilitários básicos para processamento de dados.
+### `main.py`
 
----
-
-## **Observações**
-- Certifique-se de que o banco de dados MongoDB contém os dados necessários para execução.
-- Os gráficos são interativos e exibidos automaticamente.
-
+Arquivo principal que inicia a execução do projeto. Responsável por obter o nome e a tag do jogador, coletar os dados, processá-los, analisá-los e gerar as visualizações.
