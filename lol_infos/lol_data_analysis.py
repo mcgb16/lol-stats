@@ -392,7 +392,7 @@ class AnalysePlayer:
         fig.update_layout(
             title="Grouped Mean Table",
             title_x=0.5,
-            width=800,
+            width=1200,
             height=400,
         )
         
