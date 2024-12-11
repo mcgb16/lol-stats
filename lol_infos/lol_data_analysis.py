@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from matplotlib.colors import LinearSegmentedColormap
+import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
 import mongo_code.db_connection as db_conn
@@ -240,30 +241,37 @@ class AnalysePlayer:
     def create_acc_radar_plot(self, acc_df):
         radar_df = acc_df[["kp","fb_participation","ft_participation"]]
 
-        fig, ax = plt.subplots(figsize=(10,6), subplot_kw=dict(polar=True))
-        num_vars = len(radar_df.columns)
-
         values = radar_df.iloc[0].values.tolist()
         values += values[:1]
 
-        angles = np.linspace(0, 2 * np.pi, num_vars, endpoint=False).tolist()
-        angles += angles[:1]
-
-        ax.fill(angles, values, color='blue', alpha=0.25)
-        ax.plot(angles, values, color='blue', linewidth=2)
-
-        ax.set_ylim(0, 100)
-        ax.set_yticks([20, 40, 60, 80, 100])
-        ax.set_yticklabels(['20%', '40%', '60%', '80%', '100%'], color='gray', fontsize=10)
-
         labels = self.__adjust_col_labels(radar_df.columns)
 
-        ax.set_xticks(angles[:-1])
-        ax.set_xticklabels(labels, fontsize=12)
+        fig = go.Figure()
 
-        ax.set_title("Participação em Abates", fontsize=16, pad=20)
-        
-        plt.show()
+        fig.add_trace(go.Scatterpolar(
+            r=values,
+            theta=labels,
+            fill='toself',
+            name='Porcentagem Média de Participação',
+            line=dict(color='blue', width=2),
+            fillcolor='rgba(0, 0, 255, 0.25)'
+        ))
+
+        fig.update_layout(
+            polar=dict(
+                radialaxis=dict(
+                    visible=True,
+                    range=[0, 100],
+                    tickvals=[10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+                    ticktext=['10%', '20%', '30%', '40%', '50%', '60%', '70%', '80%', '90%', '100%'],
+                    tickfont=dict(color='gray', size=10)
+                )
+            ),
+            title=dict(text='Participação em Abates', x=0.5, font=dict(size=16)),
+            showlegend=False
+        )
+
+        fig.show()
 
         return
     
