@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
-from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.colors import LinearSegmentedColormap, Normalize
+import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
 import mongo_code.db_connection as db_conn
@@ -240,51 +241,74 @@ class AnalysePlayer:
     def create_acc_radar_plot(self, acc_df):
         radar_df = acc_df[["kp","fb_participation","ft_participation"]]
 
-        fig, ax = plt.subplots(figsize=(10,6), subplot_kw=dict(polar=True))
-        num_vars = len(radar_df.columns)
-
         values = radar_df.iloc[0].values.tolist()
         values += values[:1]
 
-        angles = np.linspace(0, 2 * np.pi, num_vars, endpoint=False).tolist()
-        angles += angles[:1]
-
-        ax.fill(angles, values, color='blue', alpha=0.25)
-        ax.plot(angles, values, color='blue', linewidth=2)
-
-        ax.set_ylim(0, 100)
-        ax.set_yticks([20, 40, 60, 80, 100])
-        ax.set_yticklabels(['20%', '40%', '60%', '80%', '100%'], color='gray', fontsize=10)
-
         labels = self.__adjust_col_labels(radar_df.columns)
 
-        ax.set_xticks(angles[:-1])
-        ax.set_xticklabels(labels, fontsize=12)
+        fig = go.Figure()
 
-        ax.set_title("Participação em Abates", fontsize=16, pad=20)
-        
-        plt.show()
+        fig.add_trace(go.Scatterpolar(
+            r=values,
+            theta=labels,
+            fill='toself',
+            name='Porcentagem Média de Participação',
+            line=dict(color='blue', width=2),
+            fillcolor='rgba(0, 0, 255, 0.25)'
+        ))
+
+        fig.update_layout(
+            polar=dict(
+                radialaxis=dict(
+                    visible=True,
+                    range=[0, 100],
+                    tickvals=[10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+                    ticktext=['10%', '20%', '30%', '40%', '50%', '60%', '70%', '80%', '90%', '100%'],
+                    tickfont=dict(color='gray', size=10)
+                )
+            ),
+            title=dict(text='Participação em Abates', x=0.5, font=dict(size=16)),
+            showlegend=False
+        )
+
+        fig.show()
 
         return
     
     def create_acc_pie_plot(self, df):
-        wins = df.loc[0,"wins"]
-        losses = df.loc[0,"losses"]
-        winrate = df.loc[0,"winrate"]
+        data = df.loc[0]
+        wins = data["wins"]
+        losses = data["losses"]
+        winrate = data["winrate"]
 
         labels = ['Wins', 'Losses']
         sizes = [wins, losses]
         colors = ['#4CAF50', '#F44336']
-        explode = (0.1, 0)            
 
-        fig, ax = plt.subplots(figsize=(10, 6))
-        ax.pie(sizes, labels=labels, autopct=lambda p: f"{np.round(p/100.*np.sum(sizes), 0):.0f}", startangle=90, colors=colors, explode=explode)
+        fig = go.Figure()
 
-        ax.text(0, 0, f"{winrate:.1f}%", ha='center', va='center', fontsize=20, fontweight='bold')
-        ax.set_title("Winrate", fontsize=16, pad=20)
+        fig.add_trace(go.Pie(
+            labels=labels,
+            values=sizes,
+            marker=dict(colors=colors),
+            textinfo='percent+label',
+            hole=0,
+            pull=[0.1, 0]
+        ))
 
-        plt.show()
+        fig.update_layout(
+            annotations=[
+                dict(
+                    text=f"{winrate:.1f}%",
+                    x=0.5, y=0.5, font_size=20, showarrow=False, font=dict(weight='bold')
+                )
+            ],
+            title=dict(text="Winrate", x=0.5, font=dict(size=16)),
+            showlegend=False
+        )
 
+        fig.show()
+        
         return
 
     def __adjust_col_labels(self, table_columns):
@@ -318,54 +342,68 @@ class AnalysePlayer:
         return new_table_columns
 
     def create_grouped_mean_table_plot(self, mean_df):
-        fig, ax = plt.subplots(figsize=(10,6))
-
-        ax.axis("off")
-
         mean_df_sorted = mean_df.sort_values(by='pickrate', ascending=False)
         mean_df_top_10 = mean_df_sorted.head(10)
 
         table_data = mean_df_top_10.reset_index()
-
         table_data.columns = self.__adjust_col_labels(table_data.columns)
 
-        table = ax.table(
-            cellText=table_data.values,
-            colLabels=table_data.columns,
-            cellLoc='center',
-            loc='center',
-        )
-        table.auto_set_column_width(col=list(range(len(mean_df_top_10.columns))))
-        table.set_fontsize(10)
-        
         colors_gradient = ["#FF6F61", "#ffff8c", "#77DD77"]
         cmap = LinearSegmentedColormap.from_list("custom_cmap", colors_gradient)
-
-        for j, col_name in enumerate(table_data.columns):
-            if j == 0:
-                continue
-            
-            if col_name == "Wins" or col_name == "Losses":
-                winrate_index = table_data.columns.get_loc('Winrate%')
-                norm = mcolors.Normalize(vmin=table_data['Winrate%'].min(), vmax=table_data['Winrate%'].max())
-                for i in range(1, len(table_data.index) + 1):
-                    value = table_data.iloc[i - 1, winrate_index]
-                    color = cmap(norm(value))
-                    table[i, j].set_facecolor(color)
-            else:
-                norm = mcolors.Normalize(vmin=table_data[col_name].min(), vmax=table_data[col_name].max())
-                for i in range(1, len(table_data.index) + 1):
-                    value = table_data.iloc[i - 1, j]
-                    color = cmap(norm(value))
-                    table[i, j].set_facecolor(color)
-
         header_color = '#b39bd7'
-        for j in range(len(table_data.columns)):
-            table[0, j].set_facecolor(header_color)
-        for i in range(1, len(table_data.index) + 1):
-            table[i, 0].set_facecolor(header_color)
 
-        plt.show()
+        fill_colors = []
+        for j, col_name in enumerate(table_data.columns):
+            column_colors = []
+            if j == 0:
+                column_colors = [header_color] * len(table_data.index)
+            elif col_name == "Wins" or col_name == "Losses":
+                winrate_index = table_data.columns.get_loc('Winrate%')
+                norm = Normalize(vmin=table_data['Winrate%'].min(), vmax=table_data['Winrate%'].max())
+                for i in range(len(table_data.index)):
+                    value = table_data.iloc[i, winrate_index]
+                    color = mcolors.to_hex(cmap(norm(value)))
+                    column_colors.append(color)
+            else:
+                norm = Normalize(vmin=table_data[col_name].min(), vmax=table_data[col_name].max())
+                for i in range(len(table_data.index)):
+                    value = table_data.iloc[i, j]
+                    color = mcolors.to_hex(cmap(norm(value)))
+                    column_colors.append(color)
+            fill_colors.append(column_colors)
+
+
+        header = dict(
+            values=list(table_data.columns),
+            fill_color=header_color,
+            align='center',
+            font=dict(color='white', size=12)
+        )
+
+        cells = dict(
+            values=[table_data[col].tolist() for col in table_data.columns],
+            fill_color=fill_colors,
+            align='center',
+            font=dict(color='black', size=10)
+        )
+
+        fig = go.Figure(data=[go.Table(header=header, cells=cells)])
+
+        fig.update_layout(
+            title="Grouped Mean Table",
+            title_x=0.5,
+            width=1200,
+            height=400,
+        )
+        
+        column_widths = [
+        max(max(len(str(val)) for val in table_data[col]), len(col))
+        for col in table_data.columns
+        ]
+
+        fig.data[0].columnwidth = column_widths
+
+        fig.show()
 
         return fig
 
