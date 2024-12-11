@@ -276,23 +276,39 @@ class AnalysePlayer:
         return
     
     def create_acc_pie_plot(self, df):
-        wins = df.loc[0,"wins"]
-        losses = df.loc[0,"losses"]
-        winrate = df.loc[0,"winrate"]
+        data = df.loc[0]
+        wins = data["wins"]
+        losses = data["losses"]
+        winrate = data["winrate"]
 
         labels = ['Wins', 'Losses']
         sizes = [wins, losses]
         colors = ['#4CAF50', '#F44336']
-        explode = (0.1, 0)            
 
-        fig, ax = plt.subplots(figsize=(10, 6))
-        ax.pie(sizes, labels=labels, autopct=lambda p: f"{np.round(p/100.*np.sum(sizes), 0):.0f}", startangle=90, colors=colors, explode=explode)
+        fig = go.Figure()
 
-        ax.text(0, 0, f"{winrate:.1f}%", ha='center', va='center', fontsize=20, fontweight='bold')
-        ax.set_title("Winrate", fontsize=16, pad=20)
+        fig.add_trace(go.Pie(
+            labels=labels,
+            values=sizes,
+            marker=dict(colors=colors),
+            textinfo='percent+label',
+            hole=0,
+            pull=[0.1, 0]
+        ))
 
-        plt.show()
+        fig.update_layout(
+            annotations=[
+                dict(
+                    text=f"{winrate:.1f}%",
+                    x=0.5, y=0.5, font_size=20, showarrow=False, font=dict(weight='bold')
+                )
+            ],
+            title=dict(text="Winrate", x=0.5, font=dict(size=16)),
+            showlegend=False
+        )
 
+        fig.show()
+        
         return
 
     def __adjust_col_labels(self, table_columns):
