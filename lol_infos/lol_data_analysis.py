@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
-from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.colors import LinearSegmentedColormap, Normalize
 import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
@@ -342,54 +342,68 @@ class AnalysePlayer:
         return new_table_columns
 
     def create_grouped_mean_table_plot(self, mean_df):
-        fig, ax = plt.subplots(figsize=(10,6))
-
-        ax.axis("off")
-
         mean_df_sorted = mean_df.sort_values(by='pickrate', ascending=False)
         mean_df_top_10 = mean_df_sorted.head(10)
 
         table_data = mean_df_top_10.reset_index()
-
         table_data.columns = self.__adjust_col_labels(table_data.columns)
 
-        table = ax.table(
-            cellText=table_data.values,
-            colLabels=table_data.columns,
-            cellLoc='center',
-            loc='center',
-        )
-        table.auto_set_column_width(col=list(range(len(mean_df_top_10.columns))))
-        table.set_fontsize(10)
-        
         colors_gradient = ["#FF6F61", "#ffff8c", "#77DD77"]
         cmap = LinearSegmentedColormap.from_list("custom_cmap", colors_gradient)
-
-        for j, col_name in enumerate(table_data.columns):
-            if j == 0:
-                continue
-            
-            if col_name == "Wins" or col_name == "Losses":
-                winrate_index = table_data.columns.get_loc('Winrate%')
-                norm = mcolors.Normalize(vmin=table_data['Winrate%'].min(), vmax=table_data['Winrate%'].max())
-                for i in range(1, len(table_data.index) + 1):
-                    value = table_data.iloc[i - 1, winrate_index]
-                    color = cmap(norm(value))
-                    table[i, j].set_facecolor(color)
-            else:
-                norm = mcolors.Normalize(vmin=table_data[col_name].min(), vmax=table_data[col_name].max())
-                for i in range(1, len(table_data.index) + 1):
-                    value = table_data.iloc[i - 1, j]
-                    color = cmap(norm(value))
-                    table[i, j].set_facecolor(color)
-
         header_color = '#b39bd7'
-        for j in range(len(table_data.columns)):
-            table[0, j].set_facecolor(header_color)
-        for i in range(1, len(table_data.index) + 1):
-            table[i, 0].set_facecolor(header_color)
 
-        plt.show()
+        fill_colors = []
+        for j, col_name in enumerate(table_data.columns):
+            column_colors = []
+            if j == 0:
+                column_colors = [header_color] * len(table_data.index)
+            elif col_name == "Wins" or col_name == "Losses":
+                winrate_index = table_data.columns.get_loc('Winrate%')
+                norm = Normalize(vmin=table_data['Winrate%'].min(), vmax=table_data['Winrate%'].max())
+                for i in range(len(table_data.index)):
+                    value = table_data.iloc[i, winrate_index]
+                    color = mcolors.to_hex(cmap(norm(value)))
+                    column_colors.append(color)
+            else:
+                norm = Normalize(vmin=table_data[col_name].min(), vmax=table_data[col_name].max())
+                for i in range(len(table_data.index)):
+                    value = table_data.iloc[i, j]
+                    color = mcolors.to_hex(cmap(norm(value)))
+                    column_colors.append(color)
+            fill_colors.append(column_colors)
+
+
+        header = dict(
+            values=list(table_data.columns),
+            fill_color=header_color,
+            align='center',
+            font=dict(color='white', size=12)
+        )
+
+        cells = dict(
+            values=[table_data[col].tolist() for col in table_data.columns],
+            fill_color=fill_colors,
+            align='center',
+            font=dict(color='black', size=10)
+        )
+
+        fig = go.Figure(data=[go.Table(header=header, cells=cells)])
+
+        fig.update_layout(
+            title="Grouped Mean Table",
+            title_x=0.5,
+            width=800,
+            height=400,
+        )
+        
+        column_widths = [
+        max(max(len(str(val)) for val in table_data[col]), len(col))
+        for col in table_data.columns
+        ]
+
+        fig.data[0].columnwidth = column_widths
+
+        fig.show()
 
         return fig
 
