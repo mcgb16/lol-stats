@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div id="pie-plot">
+    <script>
+        var piePlot = JSON.parse('{{ pie_plot_json | safe }}');
+        Plotly.newPlot('pie-plot', piePlot.data, piePlot.layout);
+    </script>
+</div>
+
+<div id="radar-plot">
+    <script>
+        var radarPlot = JSON.parse('{{ radar_plot_json | safe }}');
+        Plotly.newPlot('radar-plot', radarPlot.data, radarPlot.layout);
+    </script>
+</div>
+
+<div id="champ-table">
+    <script>
+        var champTable= JSON.parse('{{ champ_table_json | safe }}');
+        Plotly.newPlot('champ-table', champTable.data, champTable.layout);
+    </script>
+</div>
+
+<div id="role-table">
+    <script>
+        var roleTable= JSON.parse('{{ role_table_json | safe }}');
+        Plotly.newPlot('role-table', roleTable.data, roleTable.layout);
+    </script>
+</div>
+
+<h1>Histórico de Partidas</h1>
+
+<ul>
+    {% for game in history_games %}
+        <li>
+            <span onclick="toggleDetails(this)">
+                {{ game.champion }} - {{ game.kda }} - {{game.match_result}}
+            </span>
+            <div style="display: none">
+                <div>
+                    <div>
+                        <h3>Blue Team</h3>
+                        <ul>
+                            {% for player in game["blue_team"][0] %}
+                                <li>{{ player.riotIdGameName }} ({{ player.championName }}) - {{ player.kills }}/{{ player.deaths }}/{{ player.assists }}</li>
+                            {% endfor %}
+                        </ul>
+                        <h4>Bans:</h4>
+                        <ul>
+                            {% for ban in game["blue_team"][1] %}
+                            <li>{{ ban.championId }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Red Team</h3>
+                        <ul>
+                            {% for player in game["red_team"][0] %}
+                                <li>{{ player.riotIdGameName }} ({{ player.championName }}) - {{ player.kills }}/{{ player.deaths }}/{{ player.assists }}</li>
+                            {% endfor %}
+                        </ul>
+                        <h4>Bans:</h4>
+                        <ul>
+                            {% for ban in game["red_team"][1] %}
+                            <li>{{ ban.championId }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </li>
+    {% endfor %}
+</ul>
+
+<script>
+    function toggleDetails(summary) {
+        var details = summary.nextElementSibling;
+        details.style.display = details.style.display === "none" ? "block" : "none";
+    }
+</script>
+
+{% endblock %}

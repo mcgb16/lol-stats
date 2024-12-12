@@ -271,9 +271,10 @@ class AnalysePlayer:
             showlegend=False
         )
 
-        fig.show()
+        # fig.show()
+        radar_json = fig.to_json()
 
-        return
+        return radar_json
     
     def create_acc_pie_plot(self, df):
         data = df.loc[0]
@@ -307,9 +308,10 @@ class AnalysePlayer:
             showlegend=False
         )
 
-        fig.show()
-        
-        return
+        # fig.show()
+        pie_json = fig.to_json()
+
+        return pie_json
 
     def __adjust_col_labels(self, table_columns):
         table_name_switch = {
@@ -403,9 +405,10 @@ class AnalysePlayer:
 
         fig.data[0].columnwidth = column_widths
 
-        fig.show()
+        # fig.show()
+        table_json = fig.to_json()
 
-        return fig
+        return table_json
 
     def create_player_analysis(self):
         all_pl_df, all_games_df, all_bans_df, all_teams_df = self.__create_dfs_classic()
@@ -458,10 +461,13 @@ class AnalysePlayer:
             "championId"           
         ]
 
-        history_games = []     
+        dfs["games"]["game_creation_time"] = pd.to_datetime(dfs["games"]['game_creation_time'], format='%d-%m-%Y %H:%M:%S')
+        dfs["games"] = dfs["games"].sort_values(by='game_creation_time', ascending=False)
+
+        history_games = []
         unique_game = {}
 
-        for i in range(1):
+        for i in range(9):
             current_game_players = dfs["players"][dfs["players"]['matchId'] == dfs["games"].iloc[i]['matchId']]
             current_game_bans = dfs["bans"][dfs["bans"]['matchId'] == dfs["games"].iloc[i]['matchId']]
             current_game_teams = dfs["teams"][dfs["teams"]['matchId'] == dfs["games"].iloc[i]['matchId']]
@@ -469,17 +475,18 @@ class AnalysePlayer:
             for j in range(len(current_game_teams)):
                 team_info = []
 
-                current_team_players = current_game_players[current_game_players['teamId'] == current_game_teams.iloc[j]['teamId']]
-                current_team_bans = current_game_bans[current_game_bans['teamId'] == current_game_teams.iloc[j]['teamId']]
+                current_team_players_df = current_game_players[current_game_players['teamId'] == current_game_teams.iloc[j]['teamId']]
+                current_team_bans_df = current_game_bans[current_game_bans['teamId'] == current_game_teams.iloc[j]['teamId']]
 
-                player_being_analysed_df = current_team_players[current_team_players['puuid'] == self.puuid]
+                player_being_analysed_df = current_team_players_df[current_team_players_df['puuid'] == self.puuid]
 
                 if player_being_analysed_df.empty == False:
                     player_being_analysed_champion = player_being_analysed_df.iloc[0]["championName"]
                     player_being_analysed_kda = f"{player_being_analysed_df.iloc[0]['kills']} / {player_being_analysed_df.iloc[0]['deaths']} / {player_being_analysed_df.iloc[0]['assists']}"
+                    player_being_analysed_win = player_being_analysed_df.iloc[0]["win"]
 
-                current_team_players_cleaned = current_team_players[player_info_to_maintain_history]                
-                current_team_bans_cleaned = current_team_bans[ban_info_to_maintain_history]
+                current_team_players_cleaned = current_team_players_df[player_info_to_maintain_history].to_dict('records')
+                current_team_bans_cleaned = current_team_bans_df[ban_info_to_maintain_history].to_dict('records')
 
                 team_info.append(current_team_players_cleaned)
                 team_info.append(current_team_bans_cleaned)
@@ -488,7 +495,11 @@ class AnalysePlayer:
             
             unique_game["champion"] = player_being_analysed_champion
             unique_game["kda"] = player_being_analysed_kda
+            if player_being_analysed_win:
+                unique_game["match_result"] = "Win"
+            else:
+                unique_game["match_result"] = "Loss"
             
-            history_games.append(unique_game)
+            history_games.append(unique_game.copy())
 
         return history_games

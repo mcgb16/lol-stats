@@ -3,9 +3,17 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
         <title>LoL Stats</title>
+
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        
     </head>
     <body>
+        <a href="{{ url_for('index') }}">
+            <h1>LoL Stats</h1>
+        </a>
+
         {%block content%}
 
         {%endblock%}
