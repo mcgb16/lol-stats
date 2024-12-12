@@ -36,7 +36,7 @@
     {% for game in history_games %}
         <li>
             <span onclick="toggleDetails(this)">
-                {{ game.champion }} - {{ game.kda }}
+                {{ game.champion }} - {{ game.kda }} - {{game.match_result}}
             </span>
             <div style="display: none">
                 <div>
