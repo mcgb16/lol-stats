@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div id="pie-plot">
+    <script>
+        var piePlot = JSON.parse('{{ pie_plot_json | safe }}');
+        Plotly.newPlot('pie-plot', piePlot.data, piePlot.layout);
+    </script>
+</div>
+
+<div id="radar-plot">
+    <script>
+        var radarPlot = JSON.parse('{{ radar_plot_json | safe }}');
+        Plotly.newPlot('radar-plot', radarPlot.data, radarPlot.layout);
+    </script>
+</div>
+
+<div id="champ-table">
+    <script>
+        var champTable= JSON.parse('{{ champ_table_json | safe }}');
+        Plotly.newPlot('champ-table', champTable.data, champTable.layout);
+    </script>
+</div>
+
+<div id="role-table">
+    <script>
+        var roleTable= JSON.parse('{{ role_table_json | safe }}');
+        Plotly.newPlot('role-table', roleTable.data, roleTable.layout);
+    </script>
+</div>
+
+{% endblock %}
