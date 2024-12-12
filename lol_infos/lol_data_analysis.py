@@ -271,9 +271,10 @@ class AnalysePlayer:
             showlegend=False
         )
 
-        fig.show()
+        # fig.show()
+        radar_json = fig.to_json()
 
-        return
+        return radar_json
     
     def create_acc_pie_plot(self, df):
         data = df.loc[0]
@@ -307,9 +308,10 @@ class AnalysePlayer:
             showlegend=False
         )
 
-        fig.show()
-        
-        return
+        # fig.show()
+        pie_json = fig.to_json()
+
+        return pie_json
 
     def __adjust_col_labels(self, table_columns):
         table_name_switch = {
@@ -403,9 +405,10 @@ class AnalysePlayer:
 
         fig.data[0].columnwidth = column_widths
 
-        fig.show()
+        # fig.show()
+        table_json = fig.to_json()
 
-        return fig
+        return table_json
 
     def create_player_analysis(self):
         all_pl_df, all_games_df, all_bans_df, all_teams_df = self.__create_dfs_classic()
