@@ -6,11 +6,11 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
-@app.route('/get-return-api', methods=['POST'])
+@app.route('/analysis-page', methods=['POST'])
 def get_player_name_tag():
     player_name = request.form['player_name']
     player_tag = request.form['player_tag']
 
-    return f"<h1>Você enviou: {player_name} e {player_tag}</h1>"
+    return render_template('analysis.html')
 
 app.run()
