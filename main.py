@@ -1,10 +1,19 @@
+from flask import Flask, render_template, request
 import lol_infos.lol_data_cleaning as ldc
 import lol_infos.lol_apis as la
 import basic_code.basic as basic
 import lol_infos.lol_data_analysis as lda
 
-if __name__ == "__main__":    
-    pl_name, pl_tag = basic.ask_name_tag()
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/analysis-page', methods=['POST'])
+def get_player_name_tag():
+    pl_name = request.form['player_name']
+    pl_tag = request.form['player_tag']
 
     api_basic = basic.apis_basic_info(pl_name, pl_tag)
 
@@ -16,7 +25,11 @@ if __name__ == "__main__":
     dfs_dict, history_games = player_analysis.create_player_analysis()
     basic_info_list = [pl_name,pl_tag, pl_elos]
 
-    player_analysis.create_acc_pie_plot(dfs_dict["no_filter_mean"])
-    player_analysis.create_acc_radar_plot(dfs_dict["no_filter_mean"])
-    player_analysis.create_grouped_mean_table_plot(dfs_dict["champion_mean"])
-    player_analysis.create_grouped_mean_table_plot(dfs_dict["role_mean"])
+    pie_plot_json = player_analysis.create_acc_pie_plot(dfs_dict["no_filter_mean"])
+    radar_plot_json = player_analysis.create_acc_radar_plot(dfs_dict["no_filter_mean"])
+    champ_table_json = player_analysis.create_grouped_mean_table_plot(dfs_dict["champion_mean"])
+    role_table_json = player_analysis.create_grouped_mean_table_plot(dfs_dict["role_mean"])
+
+    return render_template('analysis.html', pie_plot_json=pie_plot_json, radar_plot_json=radar_plot_json, champ_table_json=champ_table_json,role_table_json=role_table_json,)
+
+app.run()
