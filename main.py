@@ -30,6 +30,12 @@ def get_player_name_tag():
     champ_table_json = player_analysis.create_grouped_mean_table_plot(dfs_dict["champion_mean"])
     role_table_json = player_analysis.create_grouped_mean_table_plot(dfs_dict["role_mean"])
 
-    return render_template('analysis.html', pie_plot_json=pie_plot_json, radar_plot_json=radar_plot_json, champ_table_json=champ_table_json,role_table_json=role_table_json,)
+    return render_template('analysis.html',
+                           pie_plot_json=pie_plot_json,
+                           radar_plot_json=radar_plot_json,
+                           champ_table_json=champ_table_json,
+                           role_table_json=role_table_json,
+                           history_games=history_games
+                           )
 
 app.run()
