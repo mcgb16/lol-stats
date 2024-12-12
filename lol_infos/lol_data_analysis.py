@@ -472,17 +472,17 @@ class AnalysePlayer:
             for j in range(len(current_game_teams)):
                 team_info = []
 
-                current_team_players = current_game_players[current_game_players['teamId'] == current_game_teams.iloc[j]['teamId']]
-                current_team_bans = current_game_bans[current_game_bans['teamId'] == current_game_teams.iloc[j]['teamId']]
+                current_team_players_df = current_game_players[current_game_players['teamId'] == current_game_teams.iloc[j]['teamId']]
+                current_team_bans_df = current_game_bans[current_game_bans['teamId'] == current_game_teams.iloc[j]['teamId']]
 
-                player_being_analysed_df = current_team_players[current_team_players['puuid'] == self.puuid]
+                player_being_analysed_df = current_team_players_df[current_team_players_df['puuid'] == self.puuid]
 
                 if player_being_analysed_df.empty == False:
                     player_being_analysed_champion = player_being_analysed_df.iloc[0]["championName"]
                     player_being_analysed_kda = f"{player_being_analysed_df.iloc[0]['kills']} / {player_being_analysed_df.iloc[0]['deaths']} / {player_being_analysed_df.iloc[0]['assists']}"
 
-                current_team_players_cleaned = current_team_players[player_info_to_maintain_history]                
-                current_team_bans_cleaned = current_team_bans[ban_info_to_maintain_history]
+                current_team_players_cleaned = current_team_players_df[player_info_to_maintain_history].to_dict('records')
+                current_team_bans_cleaned = current_team_bans_df[ban_info_to_maintain_history].to_dict('records')
 
                 team_info.append(current_team_players_cleaned)
                 team_info.append(current_team_bans_cleaned)
