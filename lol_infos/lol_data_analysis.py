@@ -461,10 +461,13 @@ class AnalysePlayer:
             "championId"           
         ]
 
-        history_games = []     
+        dfs["games"]["game_creation_time"] = pd.to_datetime(dfs["games"]['game_creation_time'], format='%d-%m-%Y %H:%M:%S')
+        dfs["games"] = dfs["games"].sort_values(by='game_creation_time', ascending=False)
+
+        history_games = []
         unique_game = {}
 
-        for i in range(1):
+        for i in range(9):
             current_game_players = dfs["players"][dfs["players"]['matchId'] == dfs["games"].iloc[i]['matchId']]
             current_game_bans = dfs["bans"][dfs["bans"]['matchId'] == dfs["games"].iloc[i]['matchId']]
             current_game_teams = dfs["teams"][dfs["teams"]['matchId'] == dfs["games"].iloc[i]['matchId']]
@@ -480,6 +483,7 @@ class AnalysePlayer:
                 if player_being_analysed_df.empty == False:
                     player_being_analysed_champion = player_being_analysed_df.iloc[0]["championName"]
                     player_being_analysed_kda = f"{player_being_analysed_df.iloc[0]['kills']} / {player_being_analysed_df.iloc[0]['deaths']} / {player_being_analysed_df.iloc[0]['assists']}"
+                    player_being_analysed_win = player_being_analysed_df.iloc[0]["win"]
 
                 current_team_players_cleaned = current_team_players_df[player_info_to_maintain_history].to_dict('records')
                 current_team_bans_cleaned = current_team_bans_df[ban_info_to_maintain_history].to_dict('records')
@@ -491,7 +495,11 @@ class AnalysePlayer:
             
             unique_game["champion"] = player_being_analysed_champion
             unique_game["kda"] = player_being_analysed_kda
+            if player_being_analysed_win:
+                unique_game["match_result"] = "Win"
+            else:
+                unique_game["match_result"] = "Loss"
             
-            history_games.append(unique_game)
+            history_games.append(unique_game.copy())
 
         return history_games
