@@ -1,0 +1,17 @@
+.input-field input[type=text] {
+    border-bottom: 1px solid #efebe9;
+}
+
+.input-field input[type=text]:focus {
+    border-bottom: 1px solid #6d4c41 !important;
+    box-shadow: 0 1px 0 0 #6d4c41 !important;
+}
+
+.input-field input[type=text]::placeholder {
+    color: #efebe9;
+    transition: color 0.3s ease;
+}
+
+.input-field input[type=text]:focus::placeholder {
+    color: transparent;
+}
