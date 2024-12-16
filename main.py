@@ -38,4 +38,4 @@ def get_player_name_tag():
                            history_games=history_games
                            )
 
-app.run()
+app.run(debug=True)
